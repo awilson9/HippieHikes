@@ -1,0 +1,42 @@
+<ion-view hide-nav-bar="true" ng-controller="GuideCtrl" >
+<!-- 
+ <ion-header-bar>
+ <div class="title">
+      <button class="icon icon ion-ios-home">
+    
+      </button>
+      <button class="icon icon ion-image">
+         
+      </button>
+      <button class="icon icon ion-map">
+        
+      </button>
+    </div>
+    </ion-header-bar> -->
+    <ion-header-bar>
+    <div class="title">
+    {{data.name_description}}
+    </div>
+    <button ng-click="back()">Back</button>
+    </ion-header-bar>
+<ion-content>
+<img src="{{siteURL}}"  />
+
+<h1 class="guide-header">{{data.location_loc}}</h1>
+<h1 class="guide-header">{{data.closest_to}}</h1>
+   <div class="tag-wrapper">
+      <div class="tag-description">{{data.distance}} Miles</div>
+      <div class="tag-description">{{data.elevation}} ft. gain</div>
+      <div class="tag-description" ng-repeat="tags in data.tags">{{tags}}</div>
+   </div>
+   
+ 
+   <ion-gallery ion-gallery-items="images"></ion-gallery>
+   <div class="tag-description">{{data.description}}</div>
+   <ion-item>
+      <div class="video-container">
+      <iframe src="{{hyperlapse}}"" frameborder="0" width="560" height="315"></iframe>
+      </div>
+   </ion-item>
+</ion-content>
+</ion-view>

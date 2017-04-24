@@ -1,0 +1,50 @@
+<ion-view view-title="Hippie Hikes">
+ 	<ion-content>
+   <div>
+      <div class="bar bar-subheader" style="position:relative">
+         <h1 class="title">Near You</h1>
+      </div>
+     
+      <div ng-repeat="guide in closest">
+         <ion-button ng-click="openGuide(guide.name)">
+         <img src="{{guide.src}}"/>
+         </ion-button>
+      </div>
+   </div>
+   <div>
+      <div class="bar bar-subheader" style="position:relative">
+         <h1 class="title">Favorited</h1>
+      </div>
+      <div style="height:43px"></div>
+      <div>
+      </div>
+   </div>
+   <div>
+      <div class="bar bar-subheader" style="position:relative">
+         <h1 class="title">Featured</h1>
+      </div>
+      <div style="height:43px"></div>
+      <div class="homepage-container">
+      <div ng-repeat="guide in featured">
+         <ion-button ng-click="openGuide(guide.name)" >
+            <img src= "{{guide.src}}" style="{{setStyle(guide)}}"/>
+         </ion-button> 
+      </div>
+      </div>
+   </div>
+   <div>
+      <div class="bar bar-subheader" style="position:relative">
+         <h1 class="title">New</h1>
+      </div>
+      <div style="height:43px"></div>
+      <div class="homepage-container">
+      <div ng-repeat="guide in new">
+         <ion-button ng-click="openGuide(guide.name)">
+            <img src= "{{guide.src}}" style={{setStyle(guide)}}/>
+         </ion-button> 
+      </div>
+   </div>
+   </div>
+ 	</ion-content>
+   
+</ion-view>
