@@ -4,6 +4,15 @@
  </ion-nav-buttons>
  <ion-content class="padding">
   <ion-refresher pulling-text="Update Date" on-refresh="doRefresh()"></ion-refresher>
- 
+ 	<ion-list>
+ 	
+ 		<div class="item item-avatar" ng-repeat="guide in values" ng-click="openGuide(guide)">
+ 			<img srcset="{{guide.image_descriptions[0].URL}}" >
+ 		
+ 		<h2>{{guide.name_description}}</h2>
+ 		<p>{{guide.closest_to}}</p>	
+ 		</div>
+ 	
+ 	</ion-list>
  </ion-content>
 </ion-view>

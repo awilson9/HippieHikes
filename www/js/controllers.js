@@ -227,9 +227,12 @@
    
     
   })
-  .controller('SearchCtrl', function($scope, $ionicFilterBar) {
+  .controller('SearchCtrl', function($scope, $rootScope, $ionicFilterBar, $state) {
 
-
+    $scope.openGuide = function(guide){
+    console.log('going to guide');
+    $state.go('guide', {'data': guide});
+  }
     $scope.doRefresh = function () {
       $scope.values = window.Values;
       $scope.$broadcast('scroll.refreshComplete');
@@ -237,8 +240,8 @@
 
     $scope.showFilterBar = function () {
       filterBar = $ionicFilterBar.show({
-        items: $scope.values,
-        update: function (filteredItems) {
+        items: Object.keys($rootScope.data.guides).map(function (key) { return $rootScope.data.guides[key]; }),
+        update: function (filteredItems, string) {
           $scope.values = filteredItems
         }
         //filterProperties : 'first_name'
@@ -248,9 +251,7 @@
    
   })
 
-  .controller('ChatDetailCtrl', function($scope, $stateParams) {
-    $scope.chat = Chats.get($stateParams.chatId);
-  })
+  
   .controller('MainCtrl', function($scope, $stateParams) {
    
   })
