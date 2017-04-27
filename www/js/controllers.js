@@ -192,8 +192,12 @@
     $scope.back = function(){
       $state.go('tab.homepage');
     }
-    
+
+   
+
+
     $scope.data = $stateParams.data;
+   
     if($scope.data.hyperlapse!=null)$scope.hyperlapse = "https://www.youtube.com/embed/"+$scope.data.hyperlapse;
     var storage = firebase.storage();
     var imgRef = storage.refFromURL('gs://hippiehikes-a35e3.appspot.com/'+$scope.data.name+'/'+'0.png'); 
