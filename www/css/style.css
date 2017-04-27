@@ -49,9 +49,29 @@ img {
 	display:inline-flex;
 	flex-direction:row;
 	flex-wrap:wrap;
-	
+
+}
+.tab-container{
+	vertical-align: top;
+    display: inline-block;
+    text-align: center;
+    width: 24%;
+   
+ 
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  
+
+}
+.tab-button{
+	 margin:0px;
+    padding: 0px;
 }
 
+.tab{
+	display:block;
+	font-size:8px;
+}
 .video-container {
     position: relative;
     padding-bottom: 56.25%;
