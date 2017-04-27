@@ -4,18 +4,19 @@
       <div class="bar bar-subheader" style="position:relative">
          <h1 class="title">Near You</h1>
       </div>
-     
-      <div ng-repeat="guide in closest">
-         <ion-button ng-click="openGuide(guide.name)">
-         <img src="{{guide.src}}"/>
-         </ion-button>
+     <div class="homepage-container">
+      <div ng-repeat="guide in closest" style="border-image-width:0">
+      
+         <img ng-click="openGuide(guide.name)" src="{{guide.src}}" style="{{setStyle(guide, 'near')}}"/>
+       
+      </div>
       </div>
    </div>
    <div>
       <div class="bar bar-subheader" style="position:relative">
          <h1 class="title">Favorited</h1>
       </div>
-      <div style="height:43px"></div>
+   
       <div>
       </div>
    </div>
@@ -23,26 +24,22 @@
       <div class="bar bar-subheader" style="position:relative">
          <h1 class="title">Featured</h1>
       </div>
-      <div style="height:43px"></div>
+     
       <div class="homepage-container">
-      <div ng-repeat="guide in featured">
-         <ion-button ng-click="openGuide(guide.name)" >
-            <img src= "{{guide.src}}" style="{{setStyle(guide)}}"/>
-         </ion-button> 
-      </div>
+         <div ng-repeat="guide in featured">   
+               <img ng-click="openGuide(guide.name)" src= "{{guide.src}}" style="{{setStyle(guide, 'featured')}}"/>
+         </div>
       </div>
    </div>
    <div>
       <div class="bar bar-subheader" style="position:relative">
          <h1 class="title">New</h1>
       </div>
-      <div style="height:43px"></div>
+     
       <div class="homepage-container">
-      <div ng-repeat="guide in new">
-         <ion-button ng-click="openGuide(guide.name)">
-            <img src= "{{guide.src}}" style={{setStyle(guide)}}/>
-         </ion-button> 
-      </div>
+         <div ng-repeat="guide in new">
+               <img ng-click="openGuide(guide.name)" src= "{{guide.src}}" style={{setStyle(  guide, 'new')}}/>
+         </div>
    </div>
    </div>
  	</ion-content>

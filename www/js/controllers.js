@@ -69,51 +69,67 @@
   }
 
   }
-  $scope.setStyle = function(obj){
+  $scope.featured_style = {
+    row_index: 0, 
+    one_row:false,
+    row:0
+  };
+   $scope.near_style = {
+    row_index: 0, 
+    one_row:false,
+    row:0
+  };
+   $scope.new_style = {
+    row_index: 0, 
+    one_row:false,
+    row:0
+  };
+  $scope.setStyle = function(obj, type){
+    var active;
+    if(type==="near")active = $scope.near_style;
+    else if(type==="featured")active = $scope.featured_style;
+    else if(type==="new")active=$scope.new_style;
+    
+
     var toReturn = "";
-    if(obj.only){
-      toReturn = "height:200px;width:"+($window.innerWidth-6)+"px;margin:3px";
+    if(active.one_row){
+      toReturn = "height:175px;width:"+($window.innerWidth-2)+"px;margin-top:0.5px;margin-bottom:0.5px;margin-left:1px;margin-righ:1px;display:block;";
     }
-    else if(obj.row_index==0){
-      toReturn = "height:150px;width:"+((7*$window.innerWidth/16)-6)+"px;margin:3px";
+    else if(active.row_index==0){
+      toReturn = "height:125px;width:"+((7*$window.innerWidth/16)-1.5)+"px;margin-left:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;";
     }
     else{
-       toReturn = "height:150px;width:"+((9*$window.innerWidth/16)-6)+"px;margin:3px"
+       toReturn = "height:125px;width:"+((9*$window.innerWidth/16)-1.5)+"px;margin:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;"
     }
+    if(!active.one_row){
+          if(active.row_index==1){
+            active.one_row = true;
+            active.row_index=0;
+            active.row++;
+          }
+          else{
+            active.row_index++;
+          }
+        }
+        else{
+          active.row++;
+          active.one_row = false;
+        }
     return toReturn;
   }
   $scope.getFeatured = function(){
     $scope.featured = [];
-    var row = 0;
-    var row_index = 0;
-    var one_row = false;
     for(var guide in $rootScope.data.guides){
       if($rootScope.data.guides[guide].featured&&($scope.used.indexOf(guide)==-1)){
         $scope.featured.push(
           {
           src:$rootScope.data.guides[guide].image_descriptions[0].URL,
           name:guide,
-          row:row,
-          row_index:row_index,
-          only:one_row
         }
         );
         $scope.used.push(guide);
         //indexes for styling, alternate between one image per row and two
-        if(!one_row){
-          if(row_index==1){
-            one_row = true;
-            row_index=0;
-            row++;
-          }
-          else{
-            row_index++;
-          }
-        }
-        else{
-          row++;
-          one_row = false;
-        }
+      
       }
     }
   }

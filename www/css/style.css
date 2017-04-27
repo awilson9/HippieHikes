@@ -18,6 +18,9 @@ img {
 	color:white!important;
 	
 }
+.bar-subheader{
+	top:0px!important;
+}
 .title, .header-item{
 	color:white;
 }
