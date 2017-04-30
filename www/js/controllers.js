@@ -57,8 +57,56 @@
    // $scope.setUp();
   })
   .controller('GuideCtrl', function($scope, $state, $stateParams, Setup){
+    $scope.displayMap = false;
     $scope.back = function(){
       $state.go('tab.homepage');
+    }
+    $scope.closeMap = function(){
+      $scope.displayMap = false;
+       Mapbox.hide(
+    {},
+    function(msg) {
+      console.log("Mapbox successfully hidden");
+    }
+  );
+    }
+    $scope.showMap = function(){
+      $scope.displayMap = true;
+       Mapbox.show(
+    {
+      style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
+      margins: {
+        left: 0, // default 0
+        right: 0, // default 0
+        top: 64, // default 0
+        bottom: 0 // default 0
+      },
+      center: { // optional, without a default
+        lat: $scope.data.coords[0].lat,
+        lng: $scope.data.coords[0].long
+      },
+      zoomLevel: 11, // 0 (the entire world) to 20, default 10
+      showUserLocation: true, // your app will ask permission to the user, default false
+      hideAttribution: false, // default false, Mapbox requires this default if you're on a free plan
+      hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
+      hideCompass: false, // default false
+      disableRotation: false, // default false
+      disableScroll: false, // default false
+      disableZoom: false, // default false
+      disablePitch: false, // disable the two-finger perspective gesture, default false
+      
+    },
+
+    // optional success callback
+    function(msg) {
+      console.log("Success :) " + JSON.stringify(msg));
+    },
+
+    // optional error callback
+    function(msg) {
+      alert("Error :( " + JSON.stringify(msg));
+    }
+  )
     }
   $scope.openGuide = function(guide){
     console.log('going to guide');
@@ -130,9 +178,12 @@
   })
 
 
-  .controller('MapCtrl', function($scope, $rootScope, $cordovaGeolocation,$cordovaInAppBrowser) {
+  .controller('MapCtrl', function($scope, $cordovaGeolocation,$cordovaInAppBrowser, Setup) {
    var scheme;
- 
+   $scope.markers= Setup.markers;
+   $scope.userPos = Setup.userPos;
+   $scope.data = Setup.data;
+
     // Don't forget to add the org.apache.cordova.device plugin!
     if(device.platform === 'iOS') {
         scheme = 'comgooglemaps';
@@ -141,15 +192,13 @@
         scheme = 'geo://';
     }
     $scope.$on('$ionicView.beforeEnter', function() {
-            if($rootScope.userPos==null)$rootScope.getUserPos();
-             if($rootScope.markers==null){
-                $rootScope.fillTrailheads();
-             }
+            
+          
              Mapbox.addMarkers(
-              $rootScope.markers
+              $scope.markers
                );
              Mapbox.addMarkerCallback(function (selectedMarker) {
-                var query = "comgooglemaps://?saddr=" + $rootScope.userPos.lat + "," + $rootScope.userPos.long + "daddr=" + selectedMarker.lat + "," + selectedMarker.long + "directionsmode=transit";
+                var query = "comgooglemaps://?saddr=" + $scope.userPos.lat + "," + $scope.userPos.long + "daddr=" + selectedMarker.lat + "," + selectedMarker.long + "directionsmode=transit";
                 alert("Marker selected: " + JSON.stringify(selectedMarker));
                 appAvailability.check(
                  scheme, // URI Scheme

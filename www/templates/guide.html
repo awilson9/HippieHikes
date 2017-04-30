@@ -13,12 +13,17 @@
       </button>
     </div>
     </ion-header-bar> -->
-    <ion-header-bar>
+    <ion-header-bar id="guide-header" ng-show="!displayMap">
     <div class="title">
     {{data.name_description}}
     </div>
     <button ng-click="back()">Back</button>
     </ion-header-bar>
+     <ion-header-bar id="map-header" ng-show="displayMap" ng-click="closeMap()">
+         <div class="title">
+         {{data.name_description}} Map
+         </div>
+     </ion-header-bar>
 <ion-content>
 <img src="{{siteURL}}"  />
 
@@ -30,7 +35,9 @@
       <div class="tag-description" ng-repeat="tags in data.tags">{{tags}}</div>
    </div>
    
- 
+   <div>
+      <img src={{data.gps}} ng-click="showMap()">
+   </div>
    <ion-gallery ion-gallery-items="images"></ion-gallery>
    <div class="tag-description">{{data.description}}</div>
    <div>
