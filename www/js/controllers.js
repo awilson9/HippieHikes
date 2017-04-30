@@ -44,6 +44,7 @@
     $scope.featured = HomepageService.featured;
     $scope.new = HomepageService.new;
     $scope.data = HomepageService.data;
+    $state.reload();
   }
   Setup.run().then(setUp);
  
@@ -51,55 +52,20 @@
 
   $scope.openGuide = function(guide){
     console.log('going to guide');
-    $state.go('guide', {'data': $scope.data.guides[guide]});
+    $state.go('guide', {'data': guide});
   }
    // $scope.setUp();
   })
-
-
-  .directive('positionBarsAndContent', function($timeout) {
-
-   return {
-      
-      restrict: 'AC',
-      
-      link: function(scope, element) {
-        
-        var offsetTop = 44;
-        
-        // Get the parent node of the ion-content
-        var parent = angular.element(element[0].parentNode);
-        
-        // Get all the headers in this parent
-        var headers = parent[0].getElementsByClassName('bar');
-
-        // Iterate through all the headers
-        for(x=0;x<headers.length;x++)
-        {
-          // If this is not the main header or nav-bar, adjust its position to be below the previous header
-          if(x > 0) {
-            headers[x].style.top = offsetTop + 'px';
-          }
-          
-          // Add up the heights of all the header bars
-          offsetTop = offsetTop + headers[x].offsetHeight;
-        }      
-        
-        // Position the ion-content element directly below all the headers
-        element[0].style.top = offsetTop + 'px';
-        
-      }
-    };  
-  })
-  .controller('GuideCtrl', function($scope, $state, $stateParams){
+  .controller('GuideCtrl', function($scope, $state, $stateParams, Setup){
     $scope.back = function(){
       $state.go('tab.homepage');
     }
-
-   
-
-
-    $scope.data = $stateParams.data;
+  $scope.openGuide = function(guide){
+    console.log('going to guide');
+    $state.go('guide', {'data': guide});
+  }
+    $scope.data = Setup.data.guides[$stateParams.data];
+    $scope.globalData = Setup.data;
    
     if($scope.data.hyperlapse!=null)$scope.hyperlapse = "https://www.youtube.com/embed/"+$scope.data.hyperlapse;
     var storage = firebase.storage();

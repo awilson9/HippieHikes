@@ -33,10 +33,14 @@
  
    <ion-gallery ion-gallery-items="images"></ion-gallery>
    <div class="tag-description">{{data.description}}</div>
-   <ion-item>
+   <div>
       <div class="video-container">
       <iframe src="{{hyperlapse}}"" frameborder="0" width="560" height="315"></iframe>
       </div>
-   </ion-item>
+   </div>
+   <h1 class="guide-header">Similar Hikes</h1>
+   <div ng-repeat="guide in data.similar_hikes">
+      <img ng-click="openGuide(guide)" src="{{globalData.guides[guide].image_descriptions[0].URL}}"/>
+   </div>
 </ion-content>
 </ion-view>
