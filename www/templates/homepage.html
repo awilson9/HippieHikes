@@ -7,7 +7,7 @@
      <div class="homepage-container">
       <div ng-repeat="guide in closest" style="border-image-width:0">
       
-         <img ng-click="openGuide(guide.name)" src="{{guide.src}}" style="{{setStyle(guide, 'near')}}"/>
+         <img ng-click="openGuide(guide.name)" src="{{guide.src}}" style="{{guide.style}}"/>
        
       </div>
       </div>
@@ -27,7 +27,7 @@
      
       <div class="homepage-container">
          <div ng-repeat="guide in featured">   
-               <img ng-click="openGuide(guide.name)" src= "{{guide.src}}" style="{{setStyle(guide, 'featured')}}"/>
+               <img ng-click="openGuide(guide.name)" src= "{{guide.src}}" style="{{guide.style}}"/>
          </div>
       </div>
    </div>
@@ -38,7 +38,7 @@
      
       <div class="homepage-container">
          <div ng-repeat="guide in new">
-               <img ng-click="openGuide(guide.name)" src= "{{guide.src}}" style={{setStyle(  guide, 'new')}}/>
+               <img ng-click="openGuide(guide.name)" src= "{{guide.src}}" style={{guide.style}}/>
          </div>
    </div>
    </div>

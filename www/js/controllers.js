@@ -45,54 +45,7 @@
     $scope.new = HomepageService.new;
   }
   Setup.run().then(setUp);
-  $scope.featured_style = {
-    row_index: 0, 
-    one_row:false,
-    row:0
-  };
-   $scope.near_style = {
-    row_index: 0, 
-    one_row:false,
-    row:0
-  };
-   $scope.new_style = {
-    row_index: 0, 
-    one_row:false,
-    row:0
-  };
-  $scope.setStyle = function(obj, type){
-    var active;
-    if(type==="near")active = $scope.near_style;
-    else if(type==="featured")active = $scope.featured_style;
-    else if(type==="new")active=$scope.new_style;
-    
-
-    var toReturn = "";
-    if(active.one_row){
-      toReturn = "height:175px;width:"+($window.innerWidth-2)+"px;margin-top:0.5px;margin-bottom:0.5px;margin-left:1px;margin-righ:1px;display:block;";
-    }
-    else if(active.row_index==0){
-      toReturn = "height:125px;width:"+((7*$window.innerWidth/16)-1.5)+"px;margin-left:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;";
-    }
-    else{
-       toReturn = "height:125px;width:"+((9*$window.innerWidth/16)-1.5)+"px;margin:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;"
-    }
-    if(!active.one_row){
-          if(active.row_index==1){
-            active.one_row = true;
-            active.row_index=0;
-            active.row++;
-          }
-          else{
-            active.row_index++;
-          }
-        }
-        else{
-          active.row++;
-          active.one_row = false;
-        }
-    return toReturn;
-  }
+ 
   
 
   $scope.openGuide = function(guide){

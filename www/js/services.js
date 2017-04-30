@@ -95,8 +95,8 @@ angular.module('starter.services', [])
      var reqURL = "https://api.mapbox.com/directions/v5/mapbox/driving/"+origin.lng+","+origin.lat+";"+ destination.lng+","+destination.lat+ "?geometries=geojson&access_token=pk.eyJ1IjoiYXdpbHNvbjkiLCJhIjoiY2lyM3RqdGloMDBrbTIzbm1haXI2YTVyOCJ9.h62--AvCDGN25QoAJm6sLg";
       $http.get(reqURL)
             .success(function(data) {
-           //var src = $rootScope.data.guides[destination.name].image_descriptions[0].URL;
-            service.closest.push({duration:data.routes[0].duration, name:destination.name //src:src
+            var src = service.data.guides[destination.name].image_descriptions[0].URL;
+            service.closest.push({duration:data.routes[0].duration, name:destination.name, src:src
             });
             resolve();
             })
@@ -137,7 +137,7 @@ angular.module('starter.services', [])
    
   return service;
   })
-.factory('HomepageService', function(Setup){
+.factory('HomepageService', function(Setup, $window){
     var service = {};
     service.featured = [];
     service.favorited = [];
@@ -151,10 +151,64 @@ angular.module('starter.services', [])
       getFeatured();
       getFavorited();
       getNew();
-       service.closest = Setup.closest;
+      service.closest = Setup.closest;
+      setStyles();
 
     }
-
+    var setStyles = function(){
+       var setStyle = function(guide, style){
+        var toReturn = "";
+        if(style.one_row){
+          toReturn = "height:175px;width:"+($window.innerWidth-2)+"px;margin-top:0.5px;margin-bottom:0.5px;margin-left:1px;margin-righ:1px;display:block;";
+        }
+        else if(style.row_index==0){
+          toReturn = "height:125px;width:"+((7*$window.innerWidth/16)-1.5)+"px;margin-left:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;";
+        }
+        else{
+           toReturn = "height:125px;width:"+((9*$window.innerWidth/16)-1.5)+"px;margin:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;"
+        }
+        if(!style.one_row){
+              if(style.row_index==1){
+                style.one_row = true;
+                style.row_index=0;
+                    style.row++;
+              }
+              else{
+                style.row_index++;
+              }
+            }
+            else{
+              style.row++;
+              style.one_row = false;
+            }
+         guide.style = toReturn;
+      }
+      var featured_style = {
+       row_index: 0, 
+       one_row:false,
+       row:0
+     };
+     for(var guide in service.featured){
+      setStyle(service.featured[guide], featured_style);
+     }
+      var near_style = {
+       row_index: 0, 
+       one_row:false,
+       row:0
+     };
+     for(var guide in service.closest){
+      setStyle(service.closest[guide], near_style);
+     }
+      var new_style = {
+       row_index: 0, 
+       one_row:false,
+       row:0
+     };
+     for(var guide in service.new){
+      setStyle(service.new[guide], new_style);
+     }
+    
+    }
     var getFeatured = function(){
     for(var guide in service.data.guides){
       if(service.data.guides[guide].featured&&(service.used.indexOf(guide)==-1)){
