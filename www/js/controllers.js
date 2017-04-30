@@ -43,6 +43,7 @@
     $scope.closest = HomepageService.closest;
     $scope.featured = HomepageService.featured;
     $scope.new = HomepageService.new;
+    $scope.data = HomepageService.data;
   }
   Setup.run().then(setUp);
  
@@ -50,7 +51,7 @@
 
   $scope.openGuide = function(guide){
     console.log('going to guide');
-    $state.go('guide', {'data': $rootScope.data.guides[guide]});
+    $state.go('guide', {'data': $scope.data.guides[guide]});
   }
    // $scope.setUp();
   })
@@ -110,7 +111,7 @@
     })
     $scope.images = [];
     var img_index = 1;
-    for(var i = 1; i<$scope.data.gal_size;i++){
+    for(var i = 1; i<=$scope.data.gal_size;i++){
       
         $scope.images.push({
           src:$scope.data.image_descriptions[img_index].URL,

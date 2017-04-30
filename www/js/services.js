@@ -148,6 +148,9 @@ angular.module('starter.services', [])
 
     service.setup = function(){
       service.data = Setup.getData();
+      for(var guide in Setup.closest){
+        service.used.push(Setup.closest[guide].name);
+      }
       getFeatured();
       getFavorited();
       getNew();
