@@ -36,39 +36,15 @@
   });
 };
   })
-  .controller('HomepageCtrl', function($scope, $rootScope, $firebaseObject, $state, $timeout, $window) {
-    
-    var ref = firebase.database().ref();
-    // download the data into a local object
-    var syncObject = $firebaseObject(ref);
-    // synchronize the object with a three-way data binding
-    // click on `index.html` above to see it used in the DOM!
-    syncObject.$bindTo($rootScope, "data");
-    syncObject.$loaded().then(function(){
-      $scope.setUp();
-    });
-
-  $scope.setUp = function(){
-   
-    if($rootScope.data!=null){
-      tryAgain = false;
-     if($scope.used==null)$scope.used = [];
-      if($scope.nearest==null){
-        $scope.calculateClosest(true);
-      }
-      if($scope.favorited==null){
-        $scope.getFavorited();
-      }
-      if($scope.featured==null){
-        $scope.getFeatured();
-      }
-      if($scope.new==null){
-        $scope.getNew();
-      }
-
+  .controller('HomepageCtrl', function(Setup, HomepageService,$scope, $rootScope, $state, $timeout, $window) {
+  
+  var setUp = function(){     
+    HomepageService.setup()
+    $scope.closest = HomepageService.closest;
+    $scope.featured = HomepageService.featured;
+    $scope.new = HomepageService.new;
   }
-
-  }
+  Setup.run().then(setUp);
   $scope.featured_style = {
     row_index: 0, 
     one_row:false,
@@ -117,56 +93,13 @@
         }
     return toReturn;
   }
-  $scope.getFeatured = function(){
-    $scope.featured = [];
-    for(var guide in $rootScope.data.guides){
-      if($rootScope.data.guides[guide].featured&&($scope.used.indexOf(guide)==-1)){
-        $scope.featured.push(
-          {
-          src:$rootScope.data.guides[guide].image_descriptions[0].URL,
-          name:guide,
-        }
-        );
-        $scope.used.push(guide);
-        //indexes for styling, alternate between one image per row and two
-      
-      }
-    }
-  }
-  $scope.getFavorited = function(){
-   
-  }
-  $scope.getNew = function(){
-    $scope.new = [];
-    for(var guide in $rootScope.data.guides){
-      if($rootScope.data.guides[guide].new&&($scope.used.indexOf(guide)==-1)){
-        $scope.new.push(
-          {
-          src:$rootScope.data.guides[guide].image_descriptions[0].URL,
-          name:guide
-        }
-        );
-        $scope.used.push(guide);
-      }
-    }
-  }
-  $scope.calculateClosest = function(getPos){
-    if($rootScope.userPos==null){
-      if(getPos)$rootScope.getUserPos();
-      $timeout($scope.calculateClosest(false), 500);
-    }
-    else{
-    $rootScope.closest = [];
-    if($rootScope.markers==null)$rootScope.fillTrailheads();
-    for(var marker in $rootScope.markers){
-      $rootScope.getDirectionsFromUser($rootScope.markers[marker]);
-    }
-  }
-  }
+  
+
   $scope.openGuide = function(guide){
     console.log('going to guide');
     $state.go('guide', {'data': $rootScope.data.guides[guide]});
   }
+   // $scope.setUp();
   })
 
 

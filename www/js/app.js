@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.services', 'ngCordova','ion-gallery','jett.ionic.filter.bar','ngMd5'])
 
-.run(function($ionicPlatform, $rootScope, $cordovaGeolocation, $http) {
+.run(function($ionicPlatform, $rootScope, $cordovaGeolocation, $http, $firebaseObject) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,98 +20,9 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    $rootScope.getUserPos();
-    $rootScope.fillTrailheads();
-  });
-  $rootScope.fillTrailheads = function(){
-    if($rootScope.data!=null){
-    $rootScope.markers = [];
-              for(var guide in $rootScope.data.guides){
-                $rootScope.markers.push({
-                  lat: $rootScope.data.guides[guide].coords[0].lat,
-                  lng: $rootScope.data.guides[guide].coords[0].long,
-                  title: $rootScope.data.guides[guide].name_description,
-                  name:$rootScope.data.guides[guide].name
-                });
-          
-              }
-            }
-  }
-  $rootScope.getUserPos = function(){
    
-    var posOptions = {timeout: 10000, enableHighAccuracy: false};
-      $cordovaGeolocation
-        .getCurrentPosition(posOptions)
-        .then(function (position) {
-          console.log('got user pos');
-         var userPos = {lat: position.coords.latitude, lng: position.coords.longitude};
-          $rootScope.userPos = userPos;
-        
-        }, function(err) {
-          console.log(err);
-          $rootScope.userPos = {lat:40.758701 ,lng:-111.876183}
-        });           
-  }
-  $rootScope.getDirectionsFromUser=function(destination){
-    $rootScope.getDirections($rootScope.userPos, destination);
-  }
-  $rootScope.getDirections = function(origin,destination){
-  //mapbox way
-  var reqURL = "https://api.mapbox.com/directions/v5/mapbox/driving/"+origin.lng+","+origin.lat+";"+ destination.lng+","+destination.lat+ "?geometries=geojson&access_token=pk.eyJ1IjoiYXdpbHNvbjkiLCJhIjoiY2lyM3RqdGloMDBrbTIzbm1haXI2YTVyOCJ9.h62--AvCDGN25QoAJm6sLg";
-   $http.get(reqURL)
-            .success(function(data) {
-           var src = $rootScope.data.guides[destination.name].image_descriptions[0].URL;
-            $rootScope.closest.push({duration:data.routes[0].duration, name:destination.name, src:src});
-            
-            if($rootScope.closest.length==$rootScope.data.num_guides){
-
-            $rootScope.sortClosest();
-            console.log(JSON.stringify($rootScope.closest, null, 4));
-          }
-            })
-            .error(function(data) {
-               
-            });
-  //  google maps way
-  //        if($rootScope.directionsService==null)$rootScope.directionsService = new google.maps.DirectionsService;
-  //         $rootScope.directionsService.route({
-  //         origin: origin,
-  //         destination: destination,
-  //         travelMode: 'DRIVING'
-  //       }, function(response, status) {
-  //         // Route the directions and pass the response to a function to create
-  //         // markers for each step.
-  //         if (status === 'OK') {
-  //           console.log('ok');
-  //         } else {
-  //           window.alert('Directions request failed due to ' + status);
-  //         }
-  // })
-  }
-  $rootScope.sortClosest = function(){
-    compare = function(a, b){
-      return a.duration - b.duration;
-    }
-   $rootScope.closest.sort(compare);
-   var small_arr = [];
-   for(var i=0;i<5;i++){
-    small_arr.push($rootScope.closest[i]);
-   }
-   $rootScope.closest = small_arr;
-  //   var size = ($rootScope.closest.length<5) ? $rootScope.closest.length : 5;
-  //   if(size<5){
-  //     $rootScope.closest.push(obj);
-  //   }
-  //   else{
-  //   for(var i=0;i<size;i++){
-
-  //     if(obj.duration<$rootScope.closest[i].duration){
-  //       $rootScope.closest.splice(i, 0, obj);
-  //     }
-  //   }
-  //   if(size<5)$rootScope.closest[size] = obj;
-  // }
-  }
+    
+  });
 
 })
 
