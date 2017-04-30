@@ -100,11 +100,11 @@
    
     
   })
-  .controller('SearchCtrl', function($scope, $rootScope, $ionicFilterBar, $state) {
-
+  .controller('SearchCtrl', function($scope, $ionicFilterBar, $state, Setup) {
+    $scope.data = Setup.data;
     $scope.openGuide = function(guide){
     console.log('going to guide');
-    $state.go('guide', {'data': guide});
+    $state.go('guide', {'data': guide.name});
   }
     $scope.doRefresh = function () {
       $scope.values = window.Values;
@@ -113,7 +113,7 @@
 
     $scope.showFilterBar = function () {
       filterBar = $ionicFilterBar.show({
-        items: Object.keys($rootScope.data.guides).map(function (key) { return $rootScope.data.guides[key]; }),
+        items: Object.keys($scope.data.guides).map(function (key) { return $scope.data.guides[key]; }),
         update: function (filteredItems, string) {
           $scope.values = filteredItems
         }
