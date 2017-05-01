@@ -58,7 +58,7 @@
   });
 };
   })
-  .controller('HomepageCtrl', function(Setup, HomepageService,$scope, $rootScope, $state, $timeout, $window) {
+  .controller('HomepageCtrl', function(Guide, $ionicModal, Setup, HomepageService,$scope,  $state, $timeout) {
   
   var setUp = function(){     
     HomepageService.setup()
@@ -70,46 +70,33 @@
   }
   Setup.run().then(setUp);
  
-  
-
-  $scope.openGuide = function(guide){
-    console.log('going to guide');
-    $state.go('guide', {'data': guide});
-  }
-   // $scope.setUp();
-  })
-  .controller('GuideCtrl', function($scope, $state, $stateParams, Setup, profile,$ionicModal){
-    $scope.profile = profile;  
-    $scope.data = Setup.data.guides[$stateParams.data];
-    $scope.globalData = Setup.data;
-   
-    if($scope.data.hyperlapse!=null)$scope.hyperlapse = "https://www.youtube.com/embed/"+$scope.data.hyperlapse;
-    var storage = firebase.storage();
-    var imgRef = storage.refFromURL('gs://hippiehikes-a35e3.appspot.com/'+$scope.data.name+'/'+'0.png'); 
-    imgRef.getDownloadURL().then(function(url){
-      $scope.$apply(function(){
-        $scope.siteURL = url;
-      })
-    })
-    $scope.images = [];
-    var img_index = 1;
-    for(var i = 1; i<=$scope.data.gal_size;i++){
-      
-        $scope.images.push({
-          src:$scope.data.image_descriptions[img_index].URL,
-          sub:$scope.data.image_descriptions[img_index].caption
-      })
-         img_index++;
-        $ionicModal.fromTemplateUrl('templates/checkin.html', {
+  $ionicModal.fromTemplateUrl('templates/guide.html', {
           scope: $scope,
-
           animation: 'slide-in-up'
         }).then(function(modal) {
           $scope.modal = modal;
+          
         });
         $scope.openModal = function() {
+          Guide.setup($scope.guide).then($scope.setGuide);
           $scope.modal.show();
         };
+        $scope.setGuide = function(){
+          $scope.hyperlapse = Guide.hyperlapse
+          $scope.siteURL = Guide.siteURL;
+          $scope.data = Guide.data;
+            $scope.images = [];
+         var img_index = 1;
+         for(var i = 1; i<=$scope.data.gal_size;i++){      
+           $scope.images.push({
+             src:$scope.data.image_descriptions[img_index].URL,
+             sub:$scope.data.image_descriptions[img_index].caption
+         })
+            img_index++;
+         }
+          $scope.profile = Guide.profile;
+          $scope.globalData = Setup.data;
+        }
         $scope.closeModal = function() {
           $scope.modal.hide();
         };
@@ -125,121 +112,28 @@
         $scope.$on('modal.removed', function() {
           // Execute action
         });
-        $scope.diff={
-          easy:false,
-          medium:false,
-          intermediate:false,
-          hard:false
+        $scope.addToFuture = function(){
+          Guide.addToFuture();
         }
-        $scope.checkin = {
-          diff:'',
-          hour:'',
-          minute:'',
-          notes:'',
-          date:'',
-          distance:'',
-          guide:$scope.data.name
+        $scope.showMap = function(){
+          $scope.displayMap = true;
+          Guide.showMap();
         }
-        $scope.submit = function(){
-          if($scope.profile.checkins==null)$scope.profile.checkins = [];
-          $scope.profile.checkins.push($scope.checkin);
-          $scope.profile.$save();
-          $scope.closeModal();
+        $scope.closeMap = function(){
+          $scope.displayMap = false;
+          Guide.closeMap();
         }
-        $scope.setDiff = function(diff){
-          var change = $scope.diff[diff];
-          $scope.diff={
-          easy:false,
-          medium:false,
-          intermediate:false,
-          hard:false
-        }
-        $scope.diff[diff]=!change;
-        $scope.checkin.diff = diff; 
-        }
-    $scope.addToFuture = function(){
-      if($scope.profile.future==null){
-        $scope.profile.future = []
-        
-        }
-      if($scope.profile.future.indexOf($stateParams.data)==-1){
-        $scope.profile.future.push($stateParams.data);
-        alert("Guide Added");
-      }
-      else{
-        $scope.profile.future.splice($scope.profile.future.indexOf($stateParams.data), 1);
-        alert("Guide Succesfully Removed");
-      }
-      $scope.profile.$save();
-    }
-    $scope.displayMap = false;
-    $scope.back = function(){
-      $state.go('tab.homepage');
-    }
-    $scope.closeMap = function(){
-      $scope.displayMap = false;
-       Mapbox.hide(
-    {},
-    function(msg) {
-      console.log("Mapbox successfully hidden");
-    }
-  );
-    }
-    $scope.showMap = function(){
-      $scope.displayMap = true;
-       Mapbox.show(
-    {
-      style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
-      margins: {
-        left: 0, // default 0
-        right: 0, // default 0
-        top: 64, // default 0
-        bottom: 0 // default 0
-      },
-      center: { // optional, without a default
-        lat: $scope.data.coords[0].lat,
-        lng: $scope.data.coords[0].long
-      },
-      zoomLevel: 11, // 0 (the entire world) to 20, default 10
-      showUserLocation: true, // your app will ask permission to the user, default false
-      hideAttribution: false, // default false, Mapbox requires this default if you're on a free plan
-      hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
-      hideCompass: false, // default false
-      disableRotation: false, // default false
-      disableScroll: false, // default false
-      disableZoom: false, // default false
-      disablePitch: false, // disable the two-finger perspective gesture, default false
-      
-    },
 
-    // optional success callback
-    function(msg) {
-      console.log("Success :) " + JSON.stringify(msg));
-    },
-
-    // optional error callback
-    function(msg) {
-      alert("Error :( " + JSON.stringify(msg));
-    }
-  )
-    }
   $scope.openGuide = function(guide){
     console.log('going to guide');
-    $state.go('guide', {'data': guide});
-  }
-    
+    $scope.guide = guide;
+    $scope.openModal();
 
+  }
+   // $scope.setUp();
+  })
+  .controller('GuideCtrl', function($scope, $state, $stateParams, Setup, profile,$ionicModal){
     
-      
-    }
-    $scope.slideVisible = function(index){
-      if(  index < $ionicSlideBoxDelegate.currentIndex() -1 
-         || index > $ionicSlideBoxDelegate.currentIndex() + 1){
-        return false;
-      }
-      
-      return true;
-    }
     
    
     

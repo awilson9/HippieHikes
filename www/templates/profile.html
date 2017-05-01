@@ -6,22 +6,41 @@
 <div id="profile-picture">
 
 </div> 
-<div class="title">
-      <div class="tab-container" ng-click="display('future')">
+<div class="title profile-title">
+      <div class="tab-container" ng-show="!view.future" ng-click="display('future')">
         <span class="tab-button icon icon ion-ios-home"></span>
         <span class="tab">Future Hikes</span>
       </div>
-      <div class="tab-container" ng-click="display('offline')">
+      <div class="tab-container selected" ng-show="view.future" ng-click="display('future')">
+        <span class="tab-button icon icon ion-ios-home"></span>
+        <span class="tab">Future Hikes</span>
+      </div>
+
+      <div class="tab-container" ng-show="!view.offline" ng-click="display('offline')">
           <span class="icon icon ion-image"></span>
           <span class="tab">Offline Guides</span>
       </div>
-      <div class="tab-container" ng-click="display('past')">
+      <div class="tab-container selected" ng-show="view.offline" ng-click="display('offline')">
+          <span class="icon icon ion-image"></span>
+          <span class="tab">Offline Guides</span>
+      </div>
+
+      <div class="tab-container" ng-show="!view.past" ng-click="display('past')">
         <span class="icon icon ion-map"></span>
         <span class="tab">Past Hikes</span>
       </div>
-      <div class="tab-container" ng-click="display('checkins')">
+      <div class="tab-container selected" ng-show="view.past" ng-click="display('past')">
+        <span class="icon icon ion-map"></span>
+        <span class="tab">Past Hikes</span>
+      </div>
+
+      <div class="tab-container" ng-show="!view.checkins" ng-click="display('checkins')">
           <span class="icon icon ion-search"></span>
-          <span class="tab">Your Reviews</span>
+          <span class="tab">Checkins</span>
+      </div>
+      <div class="tab-container selected" ng-show="view.checkins" ng-click="display('checkins')">
+          <span class="icon icon ion-search"></span>
+          <span class="tab">Checkins</span>
       </div>
 
   </div>

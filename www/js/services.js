@@ -164,17 +164,24 @@ angular.module('starter.services', [])
         if(style.one_row){
           toReturn = "height:175px;width:"+($window.innerWidth-2)+"px;margin-top:0.5px;margin-bottom:0.5px;margin-left:1px;margin-righ:1px;display:block;";
         }
-        else if(style.row_index==0){
+        else if(style.row_index==0&&!style.left){
           toReturn = "height:125px;width:"+((7*$window.innerWidth/16)-1.5)+"px;margin-left:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;";
         }
+        else if(style.row_index==0&&style.left){
+          toReturn = "height:125px;width:"+((9*$window.innerWidth/16)-1.5)+"px;margin-left:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;"
+        }
+        else if(!style.left){
+           toReturn = "height:125px;width:"+((9*$window.innerWidth/16)-1.5)+"px;margin-right:1px;margin-left:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;"
+        }
         else{
-           toReturn = "height:125px;width:"+((9*$window.innerWidth/16)-1.5)+"px;margin:1px;margin-right:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;"
+           toReturn = "height:125px;width:"+((7*$window.innerWidth/16)-1.5)+"px;margin-right:1px;margin-left:0.5px;margin-top:0.5px;margin-bottom:0.5px;display:block;"
         }
         if(!style.one_row){
               if(style.row_index==1){
                 style.one_row = true;
                 style.row_index=0;
                     style.row++;
+                    style.left = !style.left;
               }
               else{
                 style.row_index++;
@@ -189,7 +196,8 @@ angular.module('starter.services', [])
       var featured_style = {
        row_index: 0, 
        one_row:false,
-       row:0
+       row:0,
+       left:false
      };
     if(service.featured.length==1)featured_style.one_row = true;
      for(var guide in service.featured){
@@ -199,7 +207,8 @@ angular.module('starter.services', [])
       var near_style = {
        row_index: 0, 
        one_row:false,
-       row:0
+       row:0,
+       left:false
      };
      if(service.closest.length==1)near_style.one_row = true;
      for(var guide in service.closest){
@@ -208,7 +217,8 @@ angular.module('starter.services', [])
       var new_style = {
        row_index: 0, 
        one_row:false,
-       row:0
+       row:0,
+       left:false
      };
      if(service.new.length==1)new_style.one_row = true;
      for(var guide in service.new){
@@ -268,4 +278,159 @@ angular.module('starter.services', [])
     };
    
     return Users;
+  })
+  .factory('Guide', function(Setup, Users, Auth){
+    var service = {};
+    service.setup = function(guide){
+      var promise = new Promise(function(resolve, reject){
+        Auth.$requireSignIn().then(function(auth){
+        Users.getProfile(auth.uid).$loaded().then(function(data){
+          service.profile=data;
+          resolve();
+        });
+      });
+      service.guide = guide;
+      service.data = Setup.data.guides[guide];
+      if(service.data.hyperlapse!=null)service.hyperlapse = "https://www.youtube.com/embed/"+service.data.hyperlapse;
+      service.siteURL = service.data.image_descriptions[0].URL;
+      
+      })
+       return promise;
+    } 
+      // $ionicModal.fromTemplateUrl('templates/checkin.html', {
+      //     scope: $scope,
+
+      //     animation: 'slide-in-up'
+      //   }).then(function(modal) {
+      //     $scope.modal = modal;
+      //   });
+      //   $scope.openModal = function() {
+      //     $scope.modal.show();
+      //   };
+      //   $scope.closeModal = function() {
+      //     $scope.modal.hide();
+      //   };
+      //   // Cleanup the modal when we're done with it!
+      //   $scope.$on('$destroy', function() {
+      //     $scope.modal.remove();
+      //   });
+      //   // Execute action on hide modal
+      //   $scope.$on('modal.hidden', function() {
+      //     // Execute action
+      //   });
+      //   // Execute action on remove modal
+      //   $scope.$on('modal.removed', function() {
+      //     // Execute action
+      //   });
+      //   $scope.diff={
+      //     easy:false,
+      //     medium:false,
+      //     intermediate:false,
+      //     hard:false
+      //   }
+      //   $scope.checkin = {
+      //     diff:'',
+      //     hour:'',
+      //     minute:'',
+      //     notes:'',
+      //     date:'',
+      //     distance:'',
+      //     guide:$scope.data.name
+      //   }
+      //   $scope.submit = function(){
+      //     if($scope.profile.checkins==null)$scope.profile.checkins = [];
+      //     $scope.profile.checkins.push($scope.checkin);
+      //     $scope.profile.$save();
+      //     $scope.closeModal();
+      //   }
+      //   $scope.setDiff = function(diff){
+      //     var change = $scope.diff[diff];
+      //     $scope.diff={
+      //     easy:false,
+      //     medium:false,
+      //     intermediate:false,
+      //     hard:false
+      //   }
+      //   $scope.diff[diff]=!change;
+      //   $scope.checkin.diff = diff; 
+      //   }
+    service.addToFuture = function(){
+      if(service.profile.future==null){
+        service.profile.future = []
+        
+        }
+      if(service.profile.future.indexOf(service.guide)==-1){
+        service.profile.future.push(service.guide);
+        alert("Guide Added");
+      }
+      else{
+        service.profile.future.splice(service.profile.future.indexOf(service.guide), 1);
+        alert("Guide Succesfully Removed");
+      }
+      service.profile.$save();
+    }
+    service.displayMap = false;
+
+    service.closeMap = function(){
+        Mapbox.hide(
+    {},
+    function(msg) {
+      console.log("Mapbox successfully hidden");
+    }
+  );
+    }
+    service.showMap = function(){
+         Mapbox.show(
+    {
+      style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
+      margins: {
+        left: 0, // default 0
+        right: 0, // default 0
+        top: 64, // default 0
+        bottom: 0 // default 0
+      },
+      center: { // optional, without a default
+        lat: service.data.coords[0].lat,
+        lng: service.data.coords[0].long
+      },
+      zoomLevel: 11, // 0 (the entire world) to 20, default 10
+      showUserLocation: true, // your app will ask permission to the user, default false
+      hideAttribution: false, // default false, Mapbox requires this default if you're on a free plan
+      hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
+      hideCompass: false, // default false
+      disableRotation: false, // default false
+      disableScroll: false, // default false
+      disableZoom: false, // default false
+      disablePitch: false, // disable the two-finger perspective gesture, default false
+      
+    },
+
+    // optional success callback
+    function(msg) {
+      console.log("Success :) " + JSON.stringify(msg));
+    },
+
+    // optional error callback
+    function(msg) {
+      alert("Error :( " + JSON.stringify(msg));
+    }
+  )
+    }
+ service.openGuide = function(guide){
+    
+  }
+    
+
+    
+      
+    
+    service.slideVisible = function(index){
+      if(  index < $ionicSlideBoxDelegate.currentIndex() -1 
+         || index > $ionicSlideBoxDelegate.currentIndex() + 1){
+        return false;
+      }
+      
+      return true;
+    }
+    return service;
   });

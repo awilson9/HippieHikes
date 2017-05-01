@@ -17,7 +17,7 @@
     <div class="title">
     {{data.name_description}}
     </div>
-    <button class="button-clear button-primary" ng-click="back()">Back</button>
+    <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
     </ion-header-bar>
      <ion-header-bar id="map-header" ng-show="displayMap" ng-click="closeMap()">
          <div class="title">
@@ -65,7 +65,7 @@
           <span class="icon icon ion-image"></span>
           <span class="tab">Download Guide</span>
       </div>
-      <div class="tab-container-3" ng-click="openModal()">
+      <div class="tab-container-3" ng-click="openCheckin()">
         <span class="icon icon ion-map"></span>
         <span class="tab">Check In</span>
       </div>
