@@ -33,6 +33,13 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 .item, .item-avatar{
 	background-color:#d3d3d3;
 }
+.selected{
+	background-color:#2ebbbe;
+}
+.check-label{
+	border-bottom: 1px solid #2ebbbe;
+	width:100%; 
+}
 .image{
   	width: 100%;
   	height: 300px;
@@ -72,6 +79,11 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 	flex-wrap:wrap;
 
 }
+.guide-bottom-bar{
+	position:fixed;
+	bottom:0;
+	width:100%;
+}
 .tab-container{
 	vertical-align: top;
     display: inline-block;
@@ -81,6 +93,18 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
  
   border: 1px solid #ccc;
   border-radius: 6px;
+  
+
+}
+.button-clear.button-clear{
+	color:#696969;
+}
+.tab-container-3{
+	vertical-align: top;
+    display: inline-block;
+    text-align: center;
+    width: 32%;
+
   
 
 }

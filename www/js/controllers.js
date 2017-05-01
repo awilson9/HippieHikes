@@ -56,7 +56,100 @@
   }
    // $scope.setUp();
   })
-  .controller('GuideCtrl', function($scope, $state, $stateParams, Setup){
+  .controller('GuideCtrl', function($scope, $state, $stateParams, Setup, profile,$ionicModal){
+    $scope.profile = profile;  
+    $scope.data = Setup.data.guides[$stateParams.data];
+    $scope.globalData = Setup.data;
+   
+    if($scope.data.hyperlapse!=null)$scope.hyperlapse = "https://www.youtube.com/embed/"+$scope.data.hyperlapse;
+    var storage = firebase.storage();
+    var imgRef = storage.refFromURL('gs://hippiehikes-a35e3.appspot.com/'+$scope.data.name+'/'+'0.png'); 
+    imgRef.getDownloadURL().then(function(url){
+      $scope.$apply(function(){
+        $scope.siteURL = url;
+      })
+    })
+    $scope.images = [];
+    var img_index = 1;
+    for(var i = 1; i<=$scope.data.gal_size;i++){
+      
+        $scope.images.push({
+          src:$scope.data.image_descriptions[img_index].URL,
+          sub:$scope.data.image_descriptions[img_index].caption
+      })
+         img_index++;
+        $ionicModal.fromTemplateUrl('templates/checkin.html', {
+          scope: $scope,
+
+          animation: 'slide-in-up'
+        }).then(function(modal) {
+          $scope.modal = modal;
+        });
+        $scope.openModal = function() {
+          $scope.modal.show();
+        };
+        $scope.closeModal = function() {
+          $scope.modal.hide();
+        };
+        // Cleanup the modal when we're done with it!
+        $scope.$on('$destroy', function() {
+          $scope.modal.remove();
+        });
+        // Execute action on hide modal
+        $scope.$on('modal.hidden', function() {
+          // Execute action
+        });
+        // Execute action on remove modal
+        $scope.$on('modal.removed', function() {
+          // Execute action
+        });
+        $scope.diff={
+          easy:false,
+          medium:false,
+          intermediate:false,
+          hard:false
+        }
+        $scope.checkin = {
+          diff:'',
+          hour:'',
+          minute:'',
+          notes:'',
+          date:'',
+          distance:'',
+          guide:$scope.data.name
+        }
+        $scope.submit = function(){
+          if($scope.profile.checkins==null)$scope.profile.checkins = [];
+          $scope.profile.checkins.push($scope.checkin);
+          $scope.profile.$save();
+          $scope.closeModal();
+        }
+        $scope.setDiff = function(diff){
+          var change = $scope.diff[diff];
+          $scope.diff={
+          easy:false,
+          medium:false,
+          intermediate:false,
+          hard:false
+        }
+        $scope.diff[diff]=!change;
+        $scope.checkin.diff = diff; 
+        }
+    $scope.addToFuture = function(){
+      if($scope.profile.future==null){
+        $scope.profile.future = []
+        
+        }
+      if($scope.profile.future.indexOf($stateParams.data)==-1){
+        $scope.profile.future.push($stateParams.data);
+        alert("Guide Added");
+      }
+      else{
+        $scope.profile.future.splice($scope.profile.future.indexOf($stateParams.data), 1);
+        alert("Guide Succesfully Removed");
+      }
+      $scope.profile.$save();
+    }
     $scope.displayMap = false;
     $scope.back = function(){
       $state.go('tab.homepage');
@@ -112,26 +205,7 @@
     console.log('going to guide');
     $state.go('guide', {'data': guide});
   }
-    $scope.data = Setup.data.guides[$stateParams.data];
-    $scope.globalData = Setup.data;
-   
-    if($scope.data.hyperlapse!=null)$scope.hyperlapse = "https://www.youtube.com/embed/"+$scope.data.hyperlapse;
-    var storage = firebase.storage();
-    var imgRef = storage.refFromURL('gs://hippiehikes-a35e3.appspot.com/'+$scope.data.name+'/'+'0.png'); 
-    imgRef.getDownloadURL().then(function(url){
-      $scope.$apply(function(){
-        $scope.siteURL = url;
-      })
-    })
-    $scope.images = [];
-    var img_index = 1;
-    for(var i = 1; i<=$scope.data.gal_size;i++){
-      
-        $scope.images.push({
-          src:$scope.data.image_descriptions[img_index].URL,
-          sub:$scope.data.image_descriptions[img_index].caption
-      })
-         img_index++;
+    
 
     
       

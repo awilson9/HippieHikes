@@ -64,6 +64,15 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
   })
   .state('guide',{
     url:'/guide',
+    resolve:{
+      profile: function(Users, Auth){
+      return Auth.$requireSignIn().then(function(auth){
+        return Users.getProfile(auth.uid).$loaded().then(function(data){
+          return data;
+        });
+      });
+    }
+    },
     templateUrl:'templates/guide.html',
     controller:'GuideCtrl',
     params:{'data':null, 'ref':null},

@@ -191,7 +191,9 @@ angular.module('starter.services', [])
        one_row:false,
        row:0
      };
+    if(service.featured.length==1)featured_style.one_row = true;
      for(var guide in service.featured){
+     
       setStyle(service.featured[guide], featured_style);
      }
       var near_style = {
@@ -199,6 +201,7 @@ angular.module('starter.services', [])
        one_row:false,
        row:0
      };
+     if(service.closest.length==1)near_style.one_row = true;
      for(var guide in service.closest){
       setStyle(service.closest[guide], near_style);
      }
@@ -207,6 +210,7 @@ angular.module('starter.services', [])
        one_row:false,
        row:0
      };
+     if(service.new.length==1)new_style.one_row = true;
      for(var guide in service.new){
       setStyle(service.new[guide], new_style);
      }
