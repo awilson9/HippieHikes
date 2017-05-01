@@ -23,9 +23,31 @@
       $state.go('register');
     }
   }) 
-  .controller('ProfileCtrl', function($state, md5, Auth, profile, auth){
+  .controller('ProfileCtrl', function($state, md5, Auth, profile, auth,$scope, Setup){
     var profileCtrl = this;
+    $scope.data = Setup.data;
+    $scope.profile = profile;
     profileCtrl.profile = profile;
+    $scope.view = {
+      future:true,
+      offline:false,
+      past:false,
+      checkins:false
+    }
+  $scope.display = function(change){
+    $scope.view = {
+      future:false,
+      offline:false,
+      past:false,
+      checkins:false
+    }
+    $scope.view[change] = true;
+  }
+  $scope.openGuide = function(guide){
+    console.log('going to guide');
+    $state.go('guide', {'data': guide});
+  }
+    
     profileCtrl.updateProfile = function(){
       profileCtrl.profile.emailHash = md5.createHash(auth.email);
       profileCtrl.profile.$save();

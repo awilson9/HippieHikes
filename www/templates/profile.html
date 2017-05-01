@@ -7,26 +7,47 @@
 
 </div> 
 <div class="title">
-      <div class="tab-container">
+      <div class="tab-container" ng-click="display('future')">
         <span class="tab-button icon icon ion-ios-home"></span>
         <span class="tab">Future Hikes</span>
       </div>
-      <div class="tab-container">
+      <div class="tab-container" ng-click="display('offline')">
           <span class="icon icon ion-image"></span>
           <span class="tab">Offline Guides</span>
       </div>
-      <div class="tab-container">
+      <div class="tab-container" ng-click="display('past')">
         <span class="icon icon ion-map"></span>
         <span class="tab">Past Hikes</span>
       </div>
-      <div class="tab-container">
+      <div class="tab-container" ng-click="display('checkins')">
           <span class="icon icon ion-search"></span>
           <span class="tab">Your Reviews</span>
       </div>
 
   </div>
+  <div ng-show="view.future">
+    <div class="item item-avatar" ng-repeat="guide in profile.future" ng-click="openGuide(guide)">
+      <img src="{{data.guides[guide].image_descriptions[0].URL}}" >
+    
+    <h2 style="color:white">{{data.guides[guide].name_description}}</h2>
+    <p style="color:white">{{data.guides[guide].closest_to}}</p> 
+    </div>
+  </div>
+  <div ng-show="view.offline">
+  </div>
+  <div ng-show="view.past">
+  </div>
+  <div ng-show="view.checkins">
+    <div class="item item-avatar" ng-repeat="checkin in profile.checkins" ng-click="openGuide(checkin.guide)">
+      <img src="{{data.guides[checkin.guide].image_descriptions[0].URL}}"/>
+      <h2 style="color:white">{{data.guides[checkin.guide].name_description}}</h2>
+      <p style="color:white">Distance: {{checkin.distance}} miles</p>
+      <p style="color:white">Time: {{checkin.hour}} Hours {{checkin.minute}} Minutes</p>
+      <p style="color:white">Difficulty: {{checkin.diff}}</p>
+      <p style="color:white">Notes: {{checkin.notes}}</p>
+  </div>
  
-  <form ng-submit="profileCtrl.updateProfile()">
+ <!--  <form ng-submit="profileCtrl.updateProfile()">
     <p ng-hide="profileCtrl.profile.displayName">
       You'll need a display name before you can start chatting.
     </p>
@@ -35,7 +56,7 @@
       <input required type="text" class="form-control" placeholder="Display Name" ng-model="profileCtrl.profile.displayName">
     </div>
     <input type="submit" class="btn btn-default" value="Set Display Name">
-  </form>
+  </form> -->
    <a href="#" ng-click="profileCtrl.logout()">logout</a>
 </div>
 </ion-content>
