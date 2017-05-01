@@ -84,13 +84,7 @@
     $scope.globalData = Setup.data;
    
     if($scope.data.hyperlapse!=null)$scope.hyperlapse = "https://www.youtube.com/embed/"+$scope.data.hyperlapse;
-    var storage = firebase.storage();
-    var imgRef = storage.refFromURL('gs://hippiehikes-a35e3.appspot.com/'+$scope.data.name+'/'+'0.png'); 
-    imgRef.getDownloadURL().then(function(url){
-      $scope.$apply(function(){
-        $scope.siteURL = url;
-      })
-    })
+    $scope.siteURL = $scope.data.image_descriptions[0].URL;
     $scope.images = [];
     var img_index = 1;
     for(var i = 1; i<=$scope.data.gal_size;i++){
