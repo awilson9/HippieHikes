@@ -292,6 +292,7 @@ angular.module('starter.services', [])
       service.guide = guide;
       service.data = Setup.data.guides[guide];
       if(service.data.hyperlapse!=null)service.hyperlapse = "https://www.youtube.com/embed/"+service.data.hyperlapse;
+      else service.hyperlapse = "";
       service.siteURL = service.data.image_descriptions[0].URL;
       
       })

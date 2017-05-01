@@ -79,7 +79,7 @@
         });
         $scope.openModal = function() {
           Guide.setup($scope.guide).then($scope.setGuide);
-          $scope.modal.show();
+          
         };
         $scope.setGuide = function(){
           $scope.hyperlapse = Guide.hyperlapse
@@ -96,9 +96,12 @@
          }
           $scope.profile = Guide.profile;
           $scope.globalData = Setup.data;
+          $scope.modal.show();
         }
         $scope.closeModal = function() {
+          $scope.modal.remove();
           $scope.modal.hide();
+
         };
         // Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function() {
