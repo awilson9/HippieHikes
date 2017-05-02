@@ -6,7 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.services', 'ngCordova','ion-gallery','jett.ionic.filter.bar','ngMd5'])
-
+.constant('mapDbName', 'map.mbtiles')
 .run(function($ionicPlatform, $rootScope, $cordovaGeolocation, $http, $firebaseObject) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -21,6 +21,8 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
       StatusBar.styleDefault();
     }
    
+     
+    
     
   });
 
@@ -93,7 +95,6 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
 
   .state('tab.map', {
     url: '/map',
-    cache:false,
     views: {
       'tab-map': {
         templateUrl: 'templates/map.html',

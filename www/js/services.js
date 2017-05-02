@@ -136,7 +136,105 @@ angular.module('starter.services', [])
   }
    
   return service;
-  })
+  }).factory('SqliteService',function($q, $cordovaSQLite, $ionicPlatform, mapDbName){
+  var self = this;
+  self.db = null;
+  self.dbPromise = null;
+
+  self.copysuccess = function () {
+    console.log("copy success");
+    $scope.buildMap();
+  };
+
+  self.copyerror = function (e) {
+    //db already exists or problem in copying the db file. Check the Log.
+    console.log("Error Code = "+JSON.stringify(e));
+    //e.code = 516 => if db exists
+    if (e.code == 516) {
+        console.log('removing existent database file..new copy');
+        window.plugins.sqlDB.remove(mapDbName, 0, removesuccess, removeerror);          }
+  };
+
+  self.removesuccess = function () {
+    console.log("remove success");
+    window.plugins.sqlDB.copy(mapDbName, 0, copysuccess, copyerror);
+  };
+
+  self.removeerror = function () {
+    console.log("remove error");
+  };
+
+  self.openDataBase = function (def) {
+    var dbOptions = {};
+
+    if (ionic.Platform.isAndroid()) {
+      dbOptions = {name: mapDbName, createFromLocation: 1, androidDatabaseImplementation: 2, androidLockWorkaround: 1};
+    }
+    else {
+      dbOptions = {name: mapDbName, createFromLocation: 1};
+    }
+
+    self.db = window.sqlitePlugin.openDatabase(dbOptions, function(){
+      def.resolve(true);
+      console.log('opened def = true');
+    });
+  };
+
+  self.init = function() {
+      console.log("sqlservice init");
+      var def = $q.defer();
+      if (self.db != null) {
+        console.log('database already created');
+        return self.dbPromise;
+      }
+      else {
+        try {
+          if (window.sqlitePlugin) {
+            var dbOptions = {};
+
+            if (ionic.Platform.isAndroid()) {
+              dbOptions = {name: mapDbName, createFromLocation: 1, androidDatabaseImplementation: 2, androidLockWorkaround: 1};
+            }
+            else {
+              dbOptions = {name: mapDbName, createFromLocation: 1};
+            }
+
+            self.db = window.sqlitePlugin.openDatabase(dbOptions, function(){
+              def.resolve(true);
+              console.log('opened def = true');
+            });
+
+        } else {
+          def.reject();
+        }
+      } catch (e) {
+        def.reject(e);
+      }
+    }
+    self.dbPromise = def.promise; // salva a promise de abertura do bd
+
+    return def.promise;
+  };
+
+self.query = function(query, bindings) {
+  self.dbPromise = self.init();
+  //do stuff to the database. use promises
+  bindings = typeof bindings !== 'undefined' ? bindings : [];
+  var execQueryDef = $q.defer();
+
+  self.dbPromise.then(function(query, bindings) {
+    self.db.transaction(function(transaction) {
+        transaction.executeSql(query, bindings,function(trans,resp){
+            execQueryDef.resolve(resp);
+        });
+    });
+  });
+
+  return execQueryDef.promise;
+}
+
+return self;
+})
 .factory('HomepageService', function(Setup, $window){
     var service = {};
     service.featured = [];
@@ -268,4 +366,202 @@ angular.module('starter.services', [])
     };
    
     return Users;
+  }).factory('Map', function(Setup){
+    var service = {}
+    service.setup = function(){
+    if(!service.done){
+    var mapStyle = {
+    "version": 8,
+    "Name": "Demo",
+    "sources": {
+      "naturalearth": {
+        "type": "vector",
+        "tiles": [
+          "{z}/{x}/{y}"
+        ],
+        "mbtiles": true
+      },
+      "naoverview": {
+        "type": "raster",
+        "tiles": [
+          "{z}/{x}/{y}"
+        ],
+        "tileSize": 256,
+        "mbtiles": true
+      }
+    },
+    "layers": [
+      {
+        "id": "background",
+        "type": "background",
+        "paint": {
+          "background-color": "#000000"
+        }
+      },
+      {
+        "id": "naturalearth",
+        "type": "line",
+        "source": "naturalearth",
+        "source-layer": "ne_110m_admin_0_countries_lakes",
+        "minzoom": 0,
+        "paint": {
+          "line-color": "#ff0000"
+        }
+      },
+      {
+        "id": "naoverview",
+        "type": "raster",
+        "source": "naoverview",
+        "minzoom": 2,
+        "layout": {
+            "visibility": "visible"
+        },
+        "paint": {}
+      }
+    ]
+  };
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYXdpbHNvbjkiLCJhIjoiY2lyM3RqdGloMDBrbTIzbm1haXI2YTVyOCJ9.h62--AvCDGN25QoAJm6sLg';
+    service.map = new mapboxgl.Map({
+    container: 'map',
+    style: mapStyle,
+    center:[-111.6954831, 40.6055049],
+    zoom:14
+    });
+    service.done = true;
+    }
+    //service.addMarkers(Setup.markers);
+    }
+    service.addMarkers = function(markers){
+      for(var mark in markers){
+        var marker = markers[mark];
+        var popup = new mapboxgl.Popup({offset: 25})
+        .setText(marker.title);
+
+        // create DOM element for the marker
+        var el = document.createElement('div');
+        el.id = marker.name + 'marker';
+     
+        
+        // create the marker
+        new mapboxgl.Marker(el, {offset:[-25, -25]})
+            .setLngLat([marker.lng, marker.lat])
+            .setPopup(popup) // sets a popup on this marker
+            .addTo(service.map);
+          }
+    }
+
+    
+
+    return service;
+  })
+  .service('OfflineMap', function($cordovaSQLite, $cordovaGeolocation,SqliteService){
+    var service = {};
+    service.layerPositionMarker = null;
+    service.setUp = function(guide){
+      if (window.sqlitePlugin) {
+          console.log('has sqlitePlugin');
+
+          service.copysuccess = function () {
+            console.log("copy success");
+            service.buildMap(guide);
+
+          };
+
+          service.copyerror = function (e) {
+            //db already exists or problem in copying the db file. Check the Log.
+            console.log("Error Code = "+JSON.stringify(e));
+            //e.code = 516 => if db exists
+            if (e.code == 516) {
+                console.log('removing existent database file..new copy');
+                window.plugins.sqlDB.remove(guide.name+".mbtiles", 0, service.removesuccess, service.removeerror);          }
+          };
+
+          service.removesuccess = function () {
+            console.log("remove success");
+            window.plugins.sqlDB.copy(guide.name+".mbtiles", 0, service.copysuccess, service.copyerror);
+          };
+
+          service.removeerror = function () {
+            console.log("remove error");
+          };
+
+          window.plugins.sqlDB.copy(guide.name+".mbtiles",  0, service.copysuccess, service.copyerror);
+      }
+      else{
+        console.log("no");
+      }
+
+  }
+  service.buildMap = function(guide) {
+   console.log("build map");
+
+   var dbOptions = {};
+
+   if (ionic.Platform.isAndroid()) {
+     dbOptions = {name: guide.name+".mbtiles", createFromLocation: 1, location: 'default', androidDatabaseImplementation: 2, androidLockWorkaround: 1};
+   }
+   else {
+     dbOptions = {name: guide.name+".mbtiles", createFromLocation: 1, location:'default'};
+   }
+
+   var db = window.sqlitePlugin.openDatabase(dbOptions, function(db) {
+     db.transaction(function(tx) {
+       console.log("transaction: " + tx);
+       service.map = new L.Map('map', {
+         center: new L.LatLng(guide.coords[0].lat,guide.coords[0].long),
+         attributionControl: true,
+         zoom: 14,
+         maxZoom: 16,
+         minZoom: 12,
+     
+       });
+
+       var lyr = new L.TileLayer.MBTiles('',
+          {
+           tms: true,
+           scheme: 'tms',
+           unloadInvisibleTiles:true
+         },  db);
+
+       lyr.addTo(service.map);
+
+       console.log("end of build map");
+     }, function(err) {
+       console.log('Open database ERROR: ' + JSON.stringify(err));
+     });
+   });
+
+  };
+
+  /**
+   * Center map on user's current position
+   */
+  service.locate = function(){
+
+    $cordovaGeolocation
+      .getCurrentPosition()
+      .then(function (position) {
+        console.log('current position: '+position);
+
+        // remove layer que contém markers de posição
+        if (service.layerPositionMarker != null) {
+          service.map.removeLayer($scope.layerPositionMarker);
+        }
+
+        service.map.setView(new L.LatLng(position.coords.latitude, position.coords.longitude), 17, {animate: true});
+
+        var marker = L.marker([position.coords.latitude,position.coords.longitude]).bindPopup("<b>Estou aqui</b>").openPopup();
+
+        service.layerPositionMarker = L.layerGroup([marker]);
+        service.layerPositionMarker.addTo($scope.map);
+
+      }, function(err) {
+        // error
+        console.log("Location error!");
+        console.log(err);
+      });
+
+  };
+  return service;
   });

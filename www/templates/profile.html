@@ -47,6 +47,9 @@
     </div>
   </div>
   <div ng-show="view.offline">
+    <div class="item item-avatar" ng-repeat="guide in profile.offline" ng-click="openMap(guide)">
+     <img src="{{data.guides[guide].image_descriptions[0].URL}}"/>
+    <h2 style="color:white">{{data.guides[guide].name_description}}</h2>
   </div>
   <div ng-show="view.past">
   </div>
