@@ -95,6 +95,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
 
   .state('tab.map', {
     url: '/map',
+    cache:false,
     views: {
       'tab-map': {
         templateUrl: 'templates/map.html',

@@ -298,7 +298,8 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
   })
 
   .controller('MapCtrl', function($window, $scope, $cordovaGeolocation,$cordovaInAppBrowser, Setup, Map) {
-   Map.setup();
+    //for using non cordova version of mapbox
+   //Map.setup();
    $scope.markers= Setup.markers;
    $scope.userPos = Setup.userPos;
    $scope.data = Setup.data;
@@ -313,68 +314,68 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
     $scope.$on('$ionicView.beforeEnter', function() {
             
           
-//              Mapbox.addMarkers(
-//               $scope.markers
-//                );
-//              Mapbox.addMarkerCallback(function (selectedMarker) {
-//                 var query = "comgooglemaps://?saddr=" + $scope.userPos.lat + "," + $scope.userPos.long + "daddr=" + selectedMarker.lat + "," + selectedMarker.long + "directionsmode=transit";
-//                 alert("Marker selected: " + JSON.stringify(selectedMarker));
-//                 appAvailability.check(
-//                  scheme, // URI Scheme
-//                  function() {  // Success callback
-//                      window.open(query, '_system', 'location=no');
-//                      console.log('Twitter is available');
-//                  },
-//                  function() {  // Error callback
-//                      window.open('https://twitter.com/gajotres', '_system', 'location=no');
-//                      console.log('Twitter is not available');
-//     }
-// );
-//               });
+             Mapbox.addMarkers(
+              $scope.markers
+               );
+             Mapbox.addMarkerCallback(function (selectedMarker) {
+                var query = "comgooglemaps://?saddr=" + $scope.userPos.lat + "," + $scope.userPos.long + "daddr=" + selectedMarker.lat + "," + selectedMarker.long + "directionsmode=transit";
+                alert("Marker selected: " + JSON.stringify(selectedMarker));
+                appAvailability.check(
+                 scheme, // URI Scheme
+                 function() {  // Success callback
+                     window.open(query, '_system', 'location=no');
+                     console.log('Twitter is available');
+                 },
+                 function() {  // Error callback
+                     window.open('https://twitter.com/gajotres', '_system', 'location=no');
+                     console.log('Twitter is not available');
+    }
+);
+              });
 
           });
 
-  //   Mapbox.show(
-  //   {
-  //     style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
-  //     margins: {
-  //       left: 0, // default 0
-  //       right: 0, // default 0
-  //       top: 0, // default 0
-  //       bottom: 50 // default 0
-  //     },
-  //     center: { // optional, without a default
-  //       lat: 40.758701,
-  //       lng: -111.876183
-  //     },
-  //     zoomLevel: 8, // 0 (the entire world) to 20, default 10
-  //     showUserLocation: true, // your app will ask permission to the user, default false
-  //     hideAttribution: false, // default false, Mapbox requires this default if you're on a free plan
-  //     hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
-  //     hideCompass: false, // default false
-  //     disableRotation: false, // default false
-  //     disableScroll: false, // default false
-  //     disableZoom: false, // default false
-  //     disablePitch: false, // disable the two-finger perspective gesture, default false
+    Mapbox.show(
+    {
+      style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
+      margins: {
+        left: 0, // default 0
+        right: 0, // default 0
+        top: 0, // default 0
+        bottom: 50 // default 0
+      },
+      center: { // optional, without a default
+        lat: 40.758701,
+        lng: -111.876183
+      },
+      zoomLevel: 8, // 0 (the entire world) to 20, default 10
+      showUserLocation: true, // your app will ask permission to the user, default false
+      hideAttribution: false, // default false, Mapbox requires this default if you're on a free plan
+      hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
+      hideCompass: false, // default false
+      disableRotation: false, // default false
+      disableScroll: false, // default false
+      disableZoom: false, // default false
+      disablePitch: false, // disable the two-finger perspective gesture, default false
       
-  //   },
+    },
 
-  //   // optional success callback
-  //   function(msg) {
-  //     console.log("Success :) " + JSON.stringify(msg));
-  //   },
+    // optional success callback
+    function(msg) {
+      console.log("Success :) " + JSON.stringify(msg));
+    },
 
-  //   // optional error callback
-  //   function(msg) {
-  //     alert("Error :( " + JSON.stringify(msg));
-  //   }
-  // )
+    // optional error callback
+    function(msg) {
+      alert("Error :( " + JSON.stringify(msg));
+    }
+  )
    $scope.$on('$destroy', function() {
-  //     Mapbox.hide(
-  //   {},
-  //   function(msg) {
-  //     console.log("Mapbox successfully hidden");
-  //   }
-  // );
+      Mapbox.hide(
+    {},
+    function(msg) {
+      console.log("Mapbox successfully hidden");
+    }
+  );
   });
   });
