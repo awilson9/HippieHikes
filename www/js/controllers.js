@@ -318,14 +318,15 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
    $scope.markers= Setup.markers;
    $scope.userPos = Setup.userPos;
    $scope.data = Setup.data;
-  
-    // Don't forget to add the org.apache.cordova.device plugin!
-    // if(device.platform === 'iOS') {
-    //     scheme = 'comgooglemaps';
-    // }
-    // else if(device.platform === 'Android') {
-    //     scheme = 'geo://';
-    // }
+   var scheme = null;
+    //Don't forget to add the org.apache.cordova.device plugin!
+    if(ionic.Platform.isAndroid()) {
+       scheme = 'geo://';
+        
+    }
+    else {
+       scheme = 'comgooglemaps';
+    }
     $scope.$on('$ionicView.beforeEnter', function() {
             
           
@@ -333,17 +334,17 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
               $scope.markers
                );
              Mapbox.addMarkerCallback(function (selectedMarker) {
-                var query = "comgooglemaps://?saddr=" + $scope.userPos.lat + "," + $scope.userPos.long + "daddr=" + selectedMarker.lat + "," + selectedMarker.long + "directionsmode=transit";
-                alert("Marker selected: " + JSON.stringify(selectedMarker));
+                var query = "comgooglemaps://?saddr=" + $scope.userPos.lat + "," + $scope.userPos.lng + "&daddr=" + selectedMarker.lat + "," + selectedMarker.lng + "&directionsmode=transit";
+                
                 appAvailability.check(
                  scheme, // URI Scheme
                  function() {  // Success callback
                      window.open(query, '_system', 'location=no');
-                     console.log('Twitter is available');
+                     
                  },
                  function() {  // Error callback
-                     window.open('https://twitter.com/gajotres', '_system', 'location=no');
-                     console.log('Twitter is not available');
+                    window.open("http://maps.apple.com/?saddr=" + $scope.userPos.lat + "," + $scope.userPos.lng + "&daddr=" + selectedMarker.lat + "," + selectedMarker.lng + "&dirflg=d", '_system', 'location=yes');
+                    
     }
 );
               });
