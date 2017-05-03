@@ -15,6 +15,26 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
         });
     };
 })
+.constant('DB_CONFIG', {
+    name: 'DB',
+    tables: [
+      {
+            name: 'routes',
+            columns: [
+                {name: 'index', type: 'integer primary key'},
+                {name: 'lat', type: 'real'},
+                {name: 'long', type: 'real'},
+            ]
+        },
+        {
+          name: 'offlinemaps',
+          columns: [
+          {name:'guide'
+          }
+          ]
+        }
+    ]
+})
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
