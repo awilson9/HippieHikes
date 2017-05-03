@@ -54,19 +54,23 @@
    <div class="guide-bottom-bar">
    <div class="title">
       <div class="tab-container-3" ng-click="addToFuture()" ng-show="profile.future.indexOf(data.name)==-1">
-        <span class="tab-button icon icon ion-ios-home"></span>
+        <span class="tab-button icon icon ion-ios-plus"></span>
         <span class="tab">Add to Future Hikes</span>
       </div>
       <div class="tab-container-3" ng-click="addToFuture()" ng-show="profile.future.indexOf(data.name)!=-1">
-        <span class="tab-button icon icon ion-ios-home"></span>
+        <span class="tab-button icon icon ion-ios-minus"></span>
         <span class="tab">Remove From Future Hikes</span>
       </div>
-      <div class="tab-container-3">
-          <span class="icon icon ion-image"></span>
-          <span class="tab">Download Guide</span>
+      <div class="tab-container-3" ng-click="addToOffline()" ng-show="profile.offline.indexOf(data.name)==-1">
+          <span class="icon icon ion-ios-download"></span>
+          <span class="tab">Download Map</span>
+      </div>
+      <div class="tab-container-3" ng-click="addToOffline()" ng-show="profile.offline.indexOf(data.name)!=-1">
+          <span class="icon icon ion-close-round"></span>
+          <span class="tab">Remove Map</span>
       </div>
       <div class="tab-container-3" ng-click="openModal()">
-        <span class="icon icon ion-map"></span>
+        <span class="icon icon ion-checkmark"></span>
         <span class="tab">Check In</span>
       </div>
      

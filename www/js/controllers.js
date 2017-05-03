@@ -196,6 +196,21 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
       }
       $scope.profile.$save();
     }
+    $scope.addToOffline = function(){
+      if($scope.profile.offline == null){
+        $scope.profile.offline = []
+        
+        }
+      if($scope.profile.offline.indexOf($stateParams.data)==-1){
+        $scope.profile.offline.push($stateParams.data);
+        alert("Map Added");
+      }
+      else{
+        $scope.profile.offline.splice($scope.profile.offline.indexOf($stateParams.data), 1);
+        alert("Map Succesfully Removed");
+      }
+      $scope.profile.$save();
+    }
     $scope.displayMap = false;
     $scope.back = function(){
       $state.go('tab.homepage');

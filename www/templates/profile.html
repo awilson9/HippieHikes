@@ -3,20 +3,20 @@
 </div> 
 <div class="title profile-title">
       <div class="tab-container" ng-show="!view.future" ng-click="display('future')">
-        <span class="tab-button icon icon ion-ios-home"></span>
+        <span class="tab-button icon icon ion-calendar"></span>
         <span class="tab">Future Hikes</span>
       </div>
       <div class="tab-container selected" ng-show="view.future" ng-click="display('future')">
-        <span class="tab-button icon icon ion-ios-home"></span>
+        <span class="tab-button icon icon ion-calendar"></span>
         <span class="tab">Future Hikes</span>
       </div>
 
       <div class="tab-container" ng-show="!view.offline" ng-click="display('offline')">
-          <span class="icon icon ion-image"></span>
+          <span class="icon icon ion-ios-download"></span>
           <span class="tab">Offline Guides</span>
       </div>
       <div class="tab-container selected" ng-show="view.offline" ng-click="display('offline')">
-          <span class="icon icon ion-image"></span>
+          <span class="icon icon ion-ios-download"></span>
           <span class="tab">Offline Guides</span>
       </div>
       <div class="tab-container" ng-show="!view.past" ng-click="display('past')">
@@ -28,11 +28,11 @@
         <span class="tab">Past Hikes</span>
       </div>
       <div class="tab-container" ng-show="!view.checkins" ng-click="display('checkins')">
-          <span class="icon icon ion-search"></span>
+          <span class="icon icon ion-checkmark"></span>
           <span class="tab">Checkins</span>
       </div>
       <div class="tab-container selected" ng-show="view.checkins" ng-click="display('checkins')">
-          <span class="icon icon ion-search"></span>
+          <span class="icon icon ion-checkmark"></span>
           <span class="tab">Checkins</span>
       </div>
 
@@ -50,6 +50,7 @@
     <div class="item item-avatar" ng-repeat="guide in profile.offline" ng-click="openMap(guide)">
      <img src="{{data.guides[guide].image_descriptions[0].URL}}"/>
     <h2 style="color:white">{{data.guides[guide].name_description}}</h2>
+  </div>
   </div>
   <div ng-show="view.past">
   </div>
