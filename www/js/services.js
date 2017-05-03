@@ -136,7 +136,7 @@ angular.module('starter.services', [])
   }
    
   return service;
-  }).factory('SqliteService',function($q, $cordovaSQLite, $ionicPlatform, mapDbName){
+  }).factory('SqliteService',function($q, $cordovaSQLite, $ionicPlatform){
   var self = this;
   self.db = null;
   self.dbPromise = null;
@@ -564,4 +564,49 @@ return self;
 
   };
   return service;
-  });
+  })
+  .factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork){
+  service = {};
+
+    service.isOnline = function(){
+    
+        return navigator.onLine;
+      
+    },
+    service.isOffline = function(){
+        return !navigator.onLine;
+      
+    },
+    service.startWatching = function(){
+        if(ionic.Platform.isWebView()){
+ 
+          $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+            console.log("went online");
+            service.online = true;
+          });
+ 
+          $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+            Mapbox.hide();
+            console.log("went offline");
+            service.offline = false;
+          });
+ 
+        }
+        else {
+ 
+          window.addEventListener("online", function(e) {
+            console.log("went online");
+            service.online = true;
+          }, false);    
+ 
+          window.addEventListener("offline", function(e) {
+            Mapbox.hide();
+            console.log("went offline");
+            service.online = false;
+          }, false);  
+        }       
+    }
+  service.online = service.isOnline();  
+  return service
+  
+});

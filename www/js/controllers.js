@@ -87,7 +87,7 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
       $scope.openModal();
     }
   })
-  .controller('HomepageCtrl', function(Setup, HomepageService,$scope, $rootScope, $state, $timeout, $window) {
+  .controller('HomepageCtrl', function(ConnectivityMonitor, Setup, HomepageService,$scope, $rootScope, $state, $timeout, $window) {
   
   var setUp = function(){     
     HomepageService.setup()
@@ -97,7 +97,7 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
     $scope.data = HomepageService.data;
     $state.reload();
   }
-  Setup.run().then(setUp);
+  if(ConnectivityMonitor.online)Setup.run().then(setUp);
  
   
 
@@ -283,8 +283,11 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
    
     
   })
-  .controller('SearchCtrl', function($scope, $ionicFilterBar, $state, Setup) {
-    $scope.data = Setup.data;
+  .controller('SearchCtrl', function(ConnectivityMonitor, $scope, $ionicFilterBar, $state, Setup) {
+    if(ConnectivityMonitor.online)Setup.run().then(function(){
+      $scope.data = Setup.data;
+    });
+   
     $scope.openGuide = function(guide){
     console.log('going to guide');
     $state.go('guide', {'data': guide.name});
@@ -312,12 +315,30 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
    
   })
 
-  .controller('MapCtrl', function($window, $scope, $cordovaGeolocation,$cordovaInAppBrowser, Setup, Map) {
+  .controller('MapCtrl', function(ConnectivityMonitor, $window, $scope, $cordovaGeolocation,$cordovaInAppBrowser, Setup, Map) {
     //for using non cordova version of mapbox
    //Map.setup();
-   $scope.markers= Setup.markers;
-   $scope.userPos = Setup.userPos;
-   $scope.data = Setup.data;
+    if(ConnectivityMonitor.online)Setup.run().then(function(){
+      $scope.markers= Setup.markers;
+      $scope.userPos = Setup.userPos;
+      $scope.data = Setup.data;
+      Mapbox.addMarkers(
+        $scope.markers
+      );
+      Mapbox.addMarkerCallback(function (selectedMarker) {
+        var query = "comgooglemaps://?saddr=" + $scope.userPos.lat + "," + $scope.userPos.lng + "&daddr=" + selectedMarker.lat + "," + selectedMarker.lng + "&directionsmode=transit"; 
+        appAvailability.check(
+          scheme, // URI Scheme
+          function() {  // Success callback
+            window.open(query, '_system', 'location=no');    
+            },
+          function() {  // Error callback
+            window.open("http://maps.apple.com/?saddr=" + $scope.userPos.lat + "," + $scope.userPos.lng + "&daddr=" + selectedMarker.lat + "," + selectedMarker.lng + "&dirflg=d", '_system', 'location=yes');      
+            }
+        );
+      });
+    });
+
    var scheme = null;
     //Don't forget to add the org.apache.cordova.device plugin!
     if(ionic.Platform.isAndroid()) {
@@ -327,29 +348,7 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
     else {
        scheme = 'comgooglemaps';
     }
-    $scope.$on('$ionicView.beforeEnter', function() {
-            
-          
-             Mapbox.addMarkers(
-              $scope.markers
-               );
-             Mapbox.addMarkerCallback(function (selectedMarker) {
-                var query = "comgooglemaps://?saddr=" + $scope.userPos.lat + "," + $scope.userPos.lng + "&daddr=" + selectedMarker.lat + "," + selectedMarker.lng + "&directionsmode=transit";
-                
-                appAvailability.check(
-                 scheme, // URI Scheme
-                 function() {  // Success callback
-                     window.open(query, '_system', 'location=no');
-                     
-                 },
-                 function() {  // Error callback
-                    window.open("http://maps.apple.com/?saddr=" + $scope.userPos.lat + "," + $scope.userPos.lng + "&daddr=" + selectedMarker.lat + "," + selectedMarker.lng + "&dirflg=d", '_system', 'location=yes');
-                    
-    }
-);
-              });
-
-          });
+  
 
     Mapbox.show(
     {
@@ -357,7 +356,7 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
       margins: {
         left: 0, // default 0
         right: 0, // default 0
-        top: 0, // default 0
+        top: 60, // default 0
         bottom: 50 // default 0
       },
       center: { // optional, without a default

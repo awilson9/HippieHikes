@@ -6,8 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.services', 'ngCordova','ion-gallery','jett.ionic.filter.bar','ngMd5'])
-.constant('mapDbName', 'map.mbtiles')
-.run(function($ionicPlatform, $rootScope, $cordovaGeolocation, $http, $firebaseObject) {
+.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -25,6 +24,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
     
     
   });
+
 
 })
 
@@ -134,10 +134,40 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
 .state('tab.profile', {
   url: '/profile',
   resolve: {
-    auth: function($state, Users, Auth){
-      return Auth.$requireSignIn().catch(function(){
-        $state.go('tab.homepage');
+    auth: function($q, $state, Users, Auth, ConnectivityMonitor, $ionicPopup){
+      showPopup = function() {
+    
+      // Custom popup
+      var myPopup = $ionicPopup.show({
+
+         title: 'You must be logged in to view your profile',
+       
+         buttons: [
+            { text: 'Login',
+              onTap: function(e){
+                return $state.go('login');
+              } }, {
+               text: 'Ok',
+                  onTap: function(e) {
+                  return $q.defer().reject();
+                  }
+            }
+         ]
       });
+
+      myPopup.then(function(res) {
+         console.log('Tapped!', res);
+      });    
+   };
+      if(!ConnectivityMonitor.online){
+        console.alert("You must be connected to the internet to view your profile");
+        return $state.go('tab.homepage');
+      }
+      else{
+        return Auth.$requireSignIn().catch(function(){
+            showPopup();
+        });
+      }
     },
     profile: function(Users, Auth){
       return Auth.$requireSignIn().then(function(auth){
@@ -155,6 +185,6 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
 });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise('/tab/homepage');
 
 })
