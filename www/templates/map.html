@@ -1,6 +1,16 @@
-<ion-view view-title="Maps">
+<ion-view hide-nav-bar="true">
+<ion-header-bar ng-show="display_online">
+	<div class="title">
+    Maps
+    </div>
+	<button class="button-clear button-primary"  ng-click="switch(false)">Go Offline</button>
+ </ion-header-bar>
+<ion-header-bar ng-show="!display_online">
+	<div class="title">
+    Maps
+    </div>
+	<button class="button-clear button-primary"  ng-click="switch(true)">Go Online</button>
+ </ion-header-bar>
 
-    <div id='map' style="height:475px;top:50px"></div>
- 
- 
+ <div id='map' style="height:475px;top:50px"></div>
 </ion-view>

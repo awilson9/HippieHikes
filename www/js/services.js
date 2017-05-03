@@ -458,6 +458,50 @@ return self;
   .service('OfflineMap', function($cordovaSQLite, $cordovaGeolocation,SqliteService){
     var service = {};
     service.layerPositionMarker = null;
+    service.guides = {
+      "blanche" :{
+        name: "blanche",
+        center:{
+          lat: 40.6336,
+          long:-111.724
+        }
+      },
+      "bryce":{
+        name:"bryce",
+        center:{
+          lat:37.6282535,
+          long:-112.16295389999999
+        },
+        "cascade":{
+          name:"cascade",
+          center:{
+            lat:43.7514791,
+            long:-110.72232930000001
+          }
+        },
+        "catherine":{
+          name:"catherine",
+          center:{
+            lat:40.57927797826895,
+            long:-111.61068646019015
+          }
+        },
+        "grandaddy":{
+          name:"grandaddy",
+          center:{
+            lat:40.56768453437445,
+            long:-110.8251111645466
+          }
+        },
+        "muley":{
+          name:"muley",
+          center:{
+            lat:37.8583807,
+            long:-111.03865080000003
+          }
+        }
+      }
+    }
     service.setUp = function(guide){
       if (window.sqlitePlugin) {
           console.log('has sqlitePlugin');
@@ -474,19 +518,19 @@ return self;
             //e.code = 516 => if db exists
             if (e.code == 516) {
                 console.log('removing existent database file..new copy');
-                window.plugins.sqlDB.remove(guide.name+".mbtiles", 0, service.removesuccess, service.removeerror);          }
+                window.plugins.sqlDB.remove(guide+".mbtiles", 0, service.removesuccess, service.removeerror);          }
           };
 
           service.removesuccess = function () {
             console.log("remove success");
-            window.plugins.sqlDB.copy(guide.name+".mbtiles", 0, service.copysuccess, service.copyerror);
+            window.plugins.sqlDB.copy(guide+".mbtiles", 0, service.copysuccess, service.copyerror);
           };
 
           service.removeerror = function () {
             console.log("remove error");
           };
 
-          window.plugins.sqlDB.copy(guide.name+".mbtiles",  0, service.copysuccess, service.copyerror);
+          window.plugins.sqlDB.copy(guide+".mbtiles",  0, service.copysuccess, service.copyerror);
       }
       else{
         console.log("no");
@@ -499,17 +543,18 @@ return self;
    var dbOptions = {};
 
    if (ionic.Platform.isAndroid()) {
-     dbOptions = {name: guide.name+".mbtiles", createFromLocation: 1, location: 'default', androidDatabaseImplementation: 2, androidLockWorkaround: 1};
+     dbOptions = {name: guide+".mbtiles", createFromLocation: 1, location: 'default', androidDatabaseImplementation: 2, androidLockWorkaround: 1};
    }
    else {
-     dbOptions = {name: guide.name+".mbtiles", createFromLocation: 1, location:'default'};
+     dbOptions = {name: guide+".mbtiles", createFromLocation: 1, location:'default'};
    }
 
    var db = window.sqlitePlugin.openDatabase(dbOptions, function(db) {
      db.transaction(function(tx) {
        console.log("transaction: " + tx);
+       console.log(JSON.stringify(service.guides[guide]));
        service.map = new L.Map('map', {
-         center: new L.LatLng(guide.coords[0].lat,guide.coords[0].long),
+         center: new L.LatLng(service.guides[guide].center.lat,service.guides[guide].center.long),
          attributionControl: true,
          zoom: 14,
          maxZoom: 16,

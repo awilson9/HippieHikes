@@ -315,13 +315,123 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
    
   })
 
-  .controller('MapCtrl', function(ConnectivityMonitor, $window, $scope, $cordovaGeolocation,$cordovaInAppBrowser, Setup, Map) {
+  .controller('MapCtrl', function($ionicPopup,ConnectivityMonitor, $window, $scope, $cordovaGeolocation,$cordovaInAppBrowser, Setup, Map,OfflineMap) {
     //for using non cordova version of mapbox
    //Map.setup();
-    if(ConnectivityMonitor.online)Setup.run().then(function(){
+    if(ConnectivityMonitor.online){
+      Setup.run().then(function(){
+      $scope.display_online = true;
       $scope.markers= Setup.markers;
       $scope.userPos = Setup.userPos;
       $scope.data = Setup.data;
+      $scope.show();
+      });
+  }
+  else{
+    $scope.display_online = false; 
+  }
+  $scope.switch = function(online){
+    //switch to online
+    if(online){
+      if(!ConnectivityMonitor.online)alert("Sorry, you must be connected to display online maps");
+      else{
+        $scope.display_online = true;
+        $scope.show();
+      }
+    }
+    else{
+      $scope.display_online = false;
+      $scope.hide();
+      $scope.maps = OfflineMap.guides;
+      $scope.showPopup().then(function(){
+        OfflineMap.setUp($scope.selected);
+      })
+    }
+  }
+  $scope.selectGuide = function(guide){
+    $scope.selected = guide.name;
+  }
+  // When button is clicked, the popup will be shown...
+   $scope.showPopup = function() {
+      var promise = new Promise(function(resolve, reject){
+        $scope.data = {}
+    
+      // Custom popup
+      var myPopup = $ionicPopup.show({
+         template: '<div ng-repeat="map in maps"><div ng-click="selectGuide(map)">{{map.name}}</div></div>',
+         title: 'Title',
+         subTitle: 'Subtitle',
+         scope: $scope,
+      
+         buttons: [
+            {
+               text: '<b>Save</b>',
+               type: 'button-positive',
+                  onTap: function(e) {
+            
+                     if (!$scope.selected) {
+                        //don't allow the user to close unless he enters model...
+                           e.preventDefault();
+                     } else {
+                        return 
+                     }
+                  }
+            }
+         ]
+      });
+
+      myPopup.then(function(res) {
+         console.log('Tapped!', res);
+         resolve();
+      });    
+      })
+      return promise;
+   };
+   var scheme = null;
+    //Don't forget to add the org.apache.cordova.device plugin!
+    if(ionic.Platform.isAndroid()) {
+       scheme = 'geo://';
+        
+    }
+    else {
+       scheme = 'comgooglemaps';
+    }
+    $scope.show = function(){
+      Mapbox.show(
+        {
+          style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
+          margins: {
+            left: 0, // default 0
+            right: 0, // default 0
+            top: 60, // default 0
+            bottom: 50 // default 0
+          },
+          center: { // optional, without a default
+            lat: 40.758701,
+            lng: -111.876183
+          },
+          zoomLevel: 8, // 0 (the entire world) to 20, default 10
+          showUserLocation: true, // your app will ask permission to the user, default false
+          hideAttribution: false, // default false, Mapbox requires this default if you're on a free plan
+          hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
+          hideCompass: false, // default false
+          disableRotation: false, // default false
+          disableScroll: false, // default false
+          disableZoom: false, // default false
+          disablePitch: false, // disable the two-finger perspective gesture, default false
+          
+        },
+
+        // optional success callback
+        function(msg) {
+          console.log("Success :) " + JSON.stringify(msg));
+        },
+    
+        // optional error callback
+        function(msg) {
+          alert("Error :( " + JSON.stringify(msg));
+        }
+     )
       Mapbox.addMarkers(
         $scope.markers
       );
@@ -337,60 +447,18 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
             }
         );
       });
-    });
 
-   var scheme = null;
-    //Don't forget to add the org.apache.cordova.device plugin!
-    if(ionic.Platform.isAndroid()) {
-       scheme = 'geo://';
-        
     }
-    else {
-       scheme = 'comgooglemaps';
-    }
-  
 
-    Mapbox.show(
-    {
-      style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
-      margins: {
-        left: 0, // default 0
-        right: 0, // default 0
-        top: 60, // default 0
-        bottom: 50 // default 0
-      },
-      center: { // optional, without a default
-        lat: 40.758701,
-        lng: -111.876183
-      },
-      zoomLevel: 8, // 0 (the entire world) to 20, default 10
-      showUserLocation: true, // your app will ask permission to the user, default false
-      hideAttribution: false, // default false, Mapbox requires this default if you're on a free plan
-      hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
-      hideCompass: false, // default false
-      disableRotation: false, // default false
-      disableScroll: false, // default false
-      disableZoom: false, // default false
-      disablePitch: false, // disable the two-finger perspective gesture, default false
-      
-    },
-
-    // optional success callback
-    function(msg) {
-      console.log("Success :) " + JSON.stringify(msg));
-    },
-
-    // optional error callback
-    function(msg) {
-      alert("Error :( " + JSON.stringify(msg));
-    }
-  )
-   $scope.$on('$destroy', function() {
-      Mapbox.hide(
+   $scope.hide = function(){
+     Mapbox.hide(
     {},
     function(msg) {
       console.log("Mapbox successfully hidden");
     }
-  );
+    );
+   }
+   $scope.$on('$destroy', function() {
+     $scope.hide();
   });
   });
