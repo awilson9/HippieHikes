@@ -57,7 +57,7 @@
     $state.go('login');
   });
 };
-$ionicModal.fromTemplateUrl('templates/map.html', {
+$ionicModal.fromTemplateUrl('templates/map-modal.html', {
           scope: $scope,
 
           animation: 'slide-in-up'
@@ -83,8 +83,9 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
           // Execute action
         });
     $scope.openMap = function(guide){
-      OfflineMap.setUp($scope.data.guides[guide]);
       $scope.openModal();
+      $scope.guidename = $scope.data.guides[guide].name_description;
+      OfflineMap.setUp($scope.data.guides[guide].name);
     }
   })
   .controller('HomepageCtrl', function(ConnectivityMonitor, Setup, HomepageService,$scope, $rootScope, $state, $timeout, $window) {
