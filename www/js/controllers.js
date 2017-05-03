@@ -324,29 +324,36 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
       $scope.markers= Setup.markers;
       $scope.userPos = Setup.userPos;
       $scope.data = Setup.data;
-      $scope.show();
+      $scope.showMap();
       });
   }
   else{
     $scope.display_online = false; 
   }
   $scope.switch = function(online){
+    console.log(online);
     //switch to online
     if(online){
+      console.log("going online");
       if(!ConnectivityMonitor.online)alert("Sorry, you must be connected to display online maps");
       else{
-        $scope.display_online = true;
-        $scope.show();
+       $scope.display_online = true;
+       $scope.showMap();
       }
     }
     else{
+      console.log("going offline");
+      $scope.startOffline();
+    }
+  }
+  $scope.startOffline = function(){
+     OfflineMap.closeDB();
       $scope.display_online = false;
       $scope.hide();
-      $scope.maps = OfflineMap.guides;
+      $scope.maps = OfflineMap.guides;  
       $scope.showPopup().then(function(){
-        OfflineMap.setUp($scope.selected);
+      OfflineMap.setUp($scope.selected);
       })
-    }
   }
   $scope.selectGuide = function(guide){
     $scope.selected = guide.name;
@@ -358,9 +365,8 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
     
       // Custom popup
       var myPopup = $ionicPopup.show({
-         template: '<div ng-repeat="map in maps"><div ng-click="selectGuide(map)">{{map.name}}</div></div>',
-         title: 'Title',
-         subTitle: 'Subtitle',
+         template: '<div ng-repeat="map in maps" class="tag-wrapper"><div class="tag-description" ng-click="selectGuide(map)" ng-show="selected!=map.name">{{map.name}}</div><div class="tag-description selected" ng-click="selectGuide(map)" ng-show="selected===map.name">{{map.name}}</div></div>',
+         title: 'Choose a guide to display',
          scope: $scope,
       
          buttons: [
@@ -372,6 +378,7 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
                      if (!$scope.selected) {
                         //don't allow the user to close unless he enters model...
                            e.preventDefault();
+                           alert("You must choose a guide!")
                      } else {
                         return 
                      }
@@ -396,7 +403,7 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
     else {
        scheme = 'comgooglemaps';
     }
-    $scope.show = function(){
+    $scope.showMap = function(){
       Mapbox.show(
         {
           style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv', // light|dark|emerald|satellite|streets , default 'streets'
@@ -447,7 +454,7 @@ $ionicModal.fromTemplateUrl('templates/map.html', {
             }
         );
       });
-
+      console.log("done");
     }
 
    $scope.hide = function(){

@@ -81,7 +81,6 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 	display:inline-flex;
 	flex-direction:row;
 	flex-wrap:wrap;
-	padding:10px;
 }
 
 .homepage-container{
@@ -89,6 +88,22 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 	flex-direction:row;
 	flex-wrap:wrap;
 
+}
+.off{
+   pointer-events:none;
+}
+.button-positive{
+	background-color:#2ebbbe!important; 
+}
+.button-right{
+  display: block !important;
+  width: 100% !important;
+  text-align:right !important;
+}
+.button-left{
+  display: block !important;
+  width: 100% !important;
+  text-align:left !important;
 }
 .guide-bottom-bar{
 	position:fixed;

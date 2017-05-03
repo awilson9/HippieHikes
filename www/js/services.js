@@ -471,6 +471,7 @@ return self;
         center:{
           lat:37.6282535,
           long:-112.16295389999999
+          }
         },
         "cascade":{
           name:"cascade",
@@ -500,12 +501,17 @@ return self;
             long:-111.03865080000003
           }
         }
-      }
+      
     }
     service.setUp = function(guide){
+        var div = document.createElement("div");
+        div.setAttribute("id", "map");
+        div.setAttribute("style", "height:475px;top:50px");
+          // as an example add it to the body
+         document.getElementById("map-container").appendChild(div);
       if (window.sqlitePlugin) {
           console.log('has sqlitePlugin');
-
+          
           service.copysuccess = function () {
             console.log("copy success");
             service.buildMap(guide);
@@ -537,9 +543,18 @@ return self;
       }
 
   }
-  service.buildMap = function(guide) {
-   console.log("build map");
+  service.closeDB = function(){
+    if(service.db)service.db.close();
+    if(service.map){
+      service.map = null;
+      var node  = document.getElementById("map");
+      node.parentNode.removeChild(node);
 
+    }
+  }
+  service.buildMap = function(guide) {
+    console.log("build map");
+  
    var dbOptions = {};
 
    if (ionic.Platform.isAndroid()) {
@@ -576,6 +591,7 @@ return self;
        console.log('Open database ERROR: ' + JSON.stringify(err));
      });
    });
+   service.db = db;
 
   };
 

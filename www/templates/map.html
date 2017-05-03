@@ -3,14 +3,14 @@
 	<div class="title">
     Maps
     </div>
-	<button class="button-clear button-primary"  ng-click="switch(false)">Go Offline</button>
+	<button class="button-clear button-primary button-left"  myclick="switch(false)">Go Offline</button>
  </ion-header-bar>
 <ion-header-bar ng-show="!display_online">
-	<div class="title">
-    Maps
-    </div>
-	<button class="button-clear button-primary"  ng-click="switch(true)">Go Online</button>
+		
+	<button class="button-clear button-primary button-left"  myclick="switch(true)">Go Online</button>
+	<button class="button-clear button-primary button-right"  myclick="startOffline()">Switch Guide</button>
+ </ion-header-bar>
  </ion-header-bar>
 
- <div id='map' style="height:475px;top:50px"></div>
+<div id="map-container"></div>
 </ion-view>
