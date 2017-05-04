@@ -1,9 +1,6 @@
 <ion-view title="Profile">
 <ion-content>
-<div id="profile-picture">
-
-</div> 
-<div class="title profile-title">
+<div class="title profile-title" >
       <div class="tab-container" ng-show="!view.future" ng-click="display('future')">
         <span class="tab-button icon icon ion-calendar"></span>
         <span class="tab">Future Hikes</span>
@@ -40,7 +37,7 @@
 
   </div>
 
-  <div ng-show="view.future">
+  <div ng-show="view.future" style="background-color:#d3d3d3">
     <div class="item item-avatar" ng-repeat="guide in profile.future" ng-click="openGuide(guide)">
       <img src="{{data.guides[guide].image_descriptions[0].URL}}" >
     
@@ -81,7 +78,8 @@
     </div>
     <input type="submit" class="btn btn-default" value="Set Display Name">
   </form> -->
-   <a href="#" ng-click="profileCtrl.logout()">logout</a>
+  
 </div>
+ <a href="#" ng-click="profileCtrl.logout()">logout</a>
 </ion-content>
 </ion-view>

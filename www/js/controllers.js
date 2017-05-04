@@ -24,6 +24,7 @@
     }
   }) 
   .controller('ProfileCtrl', function($state, md5, Auth, profile, auth,$scope, Setup, OfflineMap, $ionicModal, Map){
+    
     var profileCtrl = this;
     $scope.data = Setup.data;
     $scope.profile = profile;
@@ -120,7 +121,7 @@ $ionicModal.fromTemplateUrl('templates/route-map.html', {
     });
      
     $scope.add = function() {
-      $scope.distance = ((15*BackgroundLocation.distance)/5280);
+      $scope.distance = Math.round((((15*BackgroundLocation.distance)/5280)*100)/100);
       $scope.seconds++;
       if ($scope.seconds >= 60) {
           $scope.seconds = 0;
@@ -188,31 +189,31 @@ $scope.route = function(){
     $scope.profile = profile;  
     $scope.data = Setup.data.guides[$stateParams.data];
     $scope.globalData = Setup.data;
+    $scope.userPos = Setup.userPos;
    
     if($scope.data.hyperlapse!=null)$scope.hyperlapse = "https://www.youtube.com/embed/"+$scope.data.hyperlapse;
     $scope.siteURL = $scope.data.image_descriptions[0].URL;
     $scope.images = [];
     var img_index = 1;
     for(var i = 1; i<=$scope.data.gal_size;i++){
-      
-        $scope.images.push({
-          src:$scope.data.image_descriptions[img_index].URL,
-          sub:$scope.data.image_descriptions[img_index].caption
+      $scope.images.push({
+        src:$scope.data.image_descriptions[img_index].URL,
+        sub:$scope.data.image_descriptions[img_index].caption
       })
-         img_index++;
-        $ionicModal.fromTemplateUrl('templates/checkin.html', {
-          scope: $scope,
-
-          animation: 'slide-in-up'
-        }).then(function(modal) {
-          $scope.modal = modal;
-        });
-        $scope.openModal = function() {
-          $scope.modal.show();
-        };
-        $scope.closeModal = function() {
-          $scope.modal.hide();
-        };
+      img_index++;
+     } 
+    $ionicModal.fromTemplateUrl('templates/checkin.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+        $scope.modal = modal;
+    });
+    $scope.openModal = function() {
+      $scope.modal.show();
+    };
+    $scope.closeModal = function() {
+      $scope.modal.hide();
+    };
         // Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function() {
           $scope.modal.remove();
@@ -240,14 +241,7 @@ $scope.route = function(){
         }
         $scope.setDiff = function(diff){
           var change = $scope.diff[diff];
-          $scope.diff={
-          easy:false,
-          medium:false,
-          intermediate:false,
-          hard:false
-        }
-        $scope.diff[diff]=!change;
-        $scope.checkin.diff = diff; 
+
         }
     $scope.addToFuture = function(){
       if($scope.profile.future==null){
@@ -263,6 +257,9 @@ $scope.route = function(){
         alert("Guide Succesfully Removed");
       }
       $scope.profile.$save();
+    }
+    $scope.getDirections = function(){
+       window.open("http://maps.apple.com/?saddr=" + $scope.userPos.lat + "," + $scope.userPos.lng + "&daddr=" + $scope.data.coords[0].lat + "," + $scope.data.coords[0].long + "&dirflg=d", '_system', 'location=yes');
     }
     $scope.addToOffline = function(){
       if($scope.profile.offline == null){
@@ -338,7 +335,7 @@ $scope.route = function(){
 
     
       
-    }
+    
     $scope.slideVisible = function(index){
       if(  index < $ionicSlideBoxDelegate.currentIndex() -1 
          || index > $ionicSlideBoxDelegate.currentIndex() + 1){

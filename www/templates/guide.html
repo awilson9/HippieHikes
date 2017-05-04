@@ -34,6 +34,7 @@
       <div class="tag-description">{{data.distance}} Miles</div>
       <div class="tag-description">{{data.elevation}} ft. gain</div>
       <div class="tag-description" ng-repeat="tags in data.tags">{{tags}}</div>
+      <div class="tag-description" ng-click="getDirections()">Get Directions Here</div>
    </div>
    
    <div>
@@ -41,11 +42,6 @@
    </div>
    <ion-gallery ion-gallery-items="images"></ion-gallery>
    <div class="tag-description">{{data.description}}</div>
-   <div>
-      <div class="video-container">
-      <iframe src="{{hyperlapse}}"" frameborder="0" width="560" height="315"></iframe>
-      </div>
-   </div>
    <h1 class="guide-header">Similar Hikes</h1>
    <div ng-repeat="guide in data.similar_hikes">
       <img ng-click="openGuide(guide)" src="{{globalData.guides[guide].image_descriptions[0].URL}}"/>

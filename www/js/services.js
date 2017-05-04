@@ -79,9 +79,10 @@ angular.module('starter.services', [])
           console.log('got user pos');
          var userPos = {lat: position.coords.latitude, lng: position.coords.longitude};
           service.userPos = userPos;
+          
           resolve();
         }, function(err) {
-          console.log(err);
+          alert(err);
           service.userPos = {lat:40.758701 ,lng:-111.876183}
           resolve();
         });    
@@ -395,7 +396,7 @@ angular.module('starter.services', [])
     service.setUp = function(guide){
         var div = document.createElement("div");
         div.setAttribute("id", "map");
-        div.setAttribute("style", "height:475px;top:50px");
+        div.setAttribute("style", "height:500px;top:50px");
           // as an example add it to the body
          document.getElementById("map-container").appendChild(div);
       if (window.sqlitePlugin) {

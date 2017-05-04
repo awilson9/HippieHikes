@@ -15,6 +15,9 @@ img {
     border-radius: 50%;
     cursor: pointer;
 }
+ion-content{
+	background-color:#d3d3d3;
+}
 
 .scrollCanvas{
   width: 100%;
@@ -171,6 +174,9 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 	border-radius: 50px;
 	margin: 18px;
 	
+}
+*{
+	font-family: Lato, Arial, Helvetica, sans-serif;
 }
 .center-item{
 	 align-self: center;
