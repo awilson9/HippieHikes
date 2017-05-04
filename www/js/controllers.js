@@ -241,7 +241,14 @@ $scope.route = function(){
         }
         $scope.setDiff = function(diff){
           var change = $scope.diff[diff];
-
+          $scope.checkin.diff = diff;
+          $scope.diff={
+          easy:false,
+          medium:false,
+          intermediate:false,
+          hard:false
+          }
+          $scope.diff[diff] = true;
         }
     $scope.addToFuture = function(){
       if($scope.profile.future==null){
