@@ -53,6 +53,11 @@
   </div>
   </div>
   <div ng-show="view.past">
+    <div class="item item-avatar" ng-repeat="route in profile.routes" ng-click="openRoute(route)">
+      <p style="color:white">Distance: {{route.distance}} miles</p>
+      <p style="color:white">Time: {{route.time}} miles</p>
+      <p style="color:white">Date: {{route.date}}</p>
+    </div>
   </div>
   <div ng-show="view.checkins">
     <div class="item item-avatar" ng-repeat="checkin in profile.checkins" ng-click="openGuide(checkin.guide)">

@@ -136,58 +136,7 @@ angular.module('starter.services', [])
   }
    
   return service;
-  }).factory('DB', function($q, DB_CONFIG) {
-    var self = this;
-    self.db = null;
-
-    self.init = function() {
-        // Use self.db = window.sqlitePlugin.openDatabase({name: DB_CONFIG.name}); in production
-        self.db = window.openDatabase(DB_CONFIG.name, '1.0', 'database', -1);
-
-        angular.forEach(DB_CONFIG.tables, function(table) {
-            var columns = [];
-
-            angular.forEach(table.columns, function(column) {
-                columns.push(column.name + ' ' + column.type);
-            });
-
-            var query = 'CREATE TABLE IF NOT EXISTS ' + table.name + ' (' + columns.join(',') + ')';
-            self.query(query);
-            console.log('Table ' + table.name + ' initialized');
-        });
-    };
-
-    self.query = function(query, bindings) {
-        bindings = typeof bindings !== 'undefined' ? bindings : [];
-        var deferred = $q.defer();
-
-        self.db.transaction(function(transaction) {
-            transaction.executeSql(query, bindings, function(transaction, result) {
-                deferred.resolve(result);
-            }, function(transaction, error) {
-                deferred.reject(error);
-            });
-        });
-
-        return deferred.promise;
-    };
-
-    self.fetchAll = function(result) {
-        var output = [];
-
-        for (var i = 0; i < result.rows.length; i++) {
-            output.push(result.rows.item(i));
-        }
-        
-        return output;
-    };
-
-    self.fetch = function(result) {
-        return result.rows.item(0);
-    };
-
-    return self;
-})
+  })
 .factory('HomepageService', function(Setup, $window){
     var service = {};
     service.featured = [];
@@ -319,71 +268,50 @@ angular.module('starter.services', [])
     };
    
     return Users;
-  }).factory('Map', function(Setup){
+  }).factory('Map', function(){
     var service = {}
-    service.setup = function(){
-    if(!service.done){
-    var mapStyle = {
-    "version": 8,
-    "Name": "Demo",
-    "sources": {
-      "naturalearth": {
-        "type": "vector",
-        "tiles": [
-          "{z}/{x}/{y}"
-        ],
-        "mbtiles": true
-      },
-      "naoverview": {
-        "type": "raster",
-        "tiles": [
-          "{z}/{x}/{y}"
-        ],
-        "tileSize": 256,
-        "mbtiles": true
-      }
-    },
-    "layers": [
-      {
-        "id": "background",
-        "type": "background",
-        "paint": {
-          "background-color": "#000000"
-        }
-      },
-      {
-        "id": "naturalearth",
-        "type": "line",
-        "source": "naturalearth",
-        "source-layer": "ne_110m_admin_0_countries_lakes",
-        "minzoom": 0,
-        "paint": {
-          "line-color": "#ff0000"
-        }
-      },
-      {
-        "id": "naoverview",
-        "type": "raster",
-        "source": "naoverview",
-        "minzoom": 2,
-        "layout": {
-            "visibility": "visible"
-        },
-        "paint": {}
-      }
-    ]
-  };
-
+    service.setup = function(coords){
+ 
+    var center = new mapboxgl.LngLat(coords[0][0], coords[0][1]);
     mapboxgl.accessToken = 'pk.eyJ1IjoiYXdpbHNvbjkiLCJhIjoiY2lyM3RqdGloMDBrbTIzbm1haXI2YTVyOCJ9.h62--AvCDGN25QoAJm6sLg';
     service.map = new mapboxgl.Map({
-    container: 'map',
-    style: mapStyle,
-    center:[-111.6954831, 40.6055049],
+    container: 'route-map',
+    style: 'mapbox://styles/awilson9/cirl1qq6k001dg4mb3f4bs1iv',
+    center: center,
     zoom:14
     });
     service.done = true;
-    }
+    service.map.on('load', function(){
+      service.drawLine(coords);
+    })
+
     //service.addMarkers(Setup.markers);
+    }
+    service.drawLine = function(coords){
+
+    service.map.addLayer({
+        "id": "route",
+        "type": "line",
+        "source": {
+            "type": "geojson",
+            "data": {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": coords
+                }
+            }
+        },
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#888",
+            "line-width": 8
+        }
+    });
     }
     service.addMarkers = function(markers){
       for(var mark in markers){
@@ -638,4 +566,41 @@ angular.module('starter.services', [])
   service.online = service.isOnline();  
   return service
   
-});
+})
+  .factory('BackgroundLocation', function(){
+    var service = {};
+    service.coords = [];
+    var bgGeo = window.BackgroundGeolocation;
+     var callbackFn = function(location, taskId) {
+      service.distance +=1;
+        var coords = location.coords;
+        var lat    = coords.latitude;
+        var lng    = coords.longitude;
+        service.coords.push([lat, lng]);
+        console.log('- Location: ', JSON.stringify(location));
+
+        // Must signal completion of your callbackFn.
+        bgGeo.finish(taskId);
+    };
+       var failureFn = function(errorCode) {
+        console.warn('- BackgroundGeoLocation error: ', errorCode);
+    }
+    bgGeo.configure({
+        // Geolocation config
+        desiredAccuracy: 100,
+        distanceFilter: 15,
+      });
+    // Listen to location events & errors.
+    bgGeo.on('location', callbackFn, failureFn);
+    service.toggle = function(value) {
+        if (value) {
+            service.coords = [];
+            service.distance = 0;
+            bgGeo.start();
+        } else {
+            bgGeo.stop();
+            return service.coords;
+        }
+    }
+    return service;
+  });

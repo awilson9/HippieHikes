@@ -23,7 +23,7 @@
       $state.go('register');
     }
   }) 
-  .controller('ProfileCtrl', function($state, md5, Auth, profile, auth,$scope, Setup, OfflineMap, $ionicModal){
+  .controller('ProfileCtrl', function($state, md5, Auth, profile, auth,$scope, Setup, OfflineMap, $ionicModal, Map){
     var profileCtrl = this;
     $scope.data = Setup.data;
     $scope.profile = profile;
@@ -59,34 +59,110 @@
 };
 $ionicModal.fromTemplateUrl('templates/map-modal.html', {
           scope: $scope,
-
           animation: 'slide-in-up'
         }).then(function(modal) {
-          $scope.modal = modal;
+          $scope.mapModal = modal;
         });
-        $scope.openModal = function() {
-          $scope.modal.show();
+        $scope.openMapModal = function() {
+          $scope.mapModal.show();
         };
-        $scope.closeModal = function() {
-          $scope.modal.hide();
+        $scope.closeMapModal = function() {
+          $scope.mapModal.hide();
         };
         // Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function() {
-          $scope.modal.remove();
+          $scope.mapModal.remove();
         });
-        // Execute action on hide modal
-        $scope.$on('modal.hidden', function() {
-          // Execute action
+
+$ionicModal.fromTemplateUrl('templates/route-map.html', {
+          scope: $scope,
+          animation: 'slide-in-up'
+        }).then(function(modal) {
+          $scope.routeModal = modal;  
         });
-        // Execute action on remove modal
-        $scope.$on('modal.removed', function() {
-          // Execute action
-        });
+        $scope.openRouteModal = function(route) {
+          $scope.routeModal.show();
+          
+          var points = [];
+          for(var coord in route.coords){
+            points.push([route.coords[coord][1], route.coords[coord][0]]);
+          }
+          Map.setup(points);
+        };
+        $scope.closeRouteModal = function() {
+          Map.map.remove();
+          $scope.routeModal.hide();
+        };
+     
+      
     $scope.openMap = function(guide){
-      $scope.openModal();
+      $scope.openMapModal();
       $scope.guidename = $scope.data.guides[guide].name_description;
       OfflineMap.setUp($scope.data.guides[guide].name);
     }
+    $scope.openRoute = function(route){
+      $scope.openRouteModal(route);
+    }
+  })
+  .controller('RouteCtrl', function(BackgroundLocation, profile, $scope, $timeout){
+      $scope.tracking = false
+      $('#recButton').addClass("notRec");
+
+     $('#recButton').click(function(){
+      if($('#recButton').hasClass('notRec')){
+       $('#recButton').removeClass("notRec");
+       $('#recButton').addClass("Rec");
+     }
+     else{
+       $('#recButton').removeClass("Rec");
+       $('#recButton').addClass("notRec");
+     }
+    });
+     
+    $scope.add = function() {
+      $scope.distance = ((15*BackgroundLocation.distance)/5280);
+      $scope.seconds++;
+      if ($scope.seconds >= 60) {
+          $scope.seconds = 0;
+          $scope.minutes++;
+          if ($scope.minutes >= 60) {
+              $scope.minutes = 0;
+              $scope.hours++;
+          }
+      }
+    
+  
+    $scope.timer();
+}
+$scope.timer = function() {
+    $scope.t = $timeout($scope.add, 1000);
+}
+
+
+$scope.route = function(){
+      if($scope.tracking){
+
+        var arr = BackgroundLocation.toggle();
+        console.log(JSON.stringify(arr));
+        if(profile.routes==null){
+          profile.routes = [];
+        }
+        $timeout.cancel($scope.t);
+        var today = new Date();
+        var dateFormat = (today.getMonth()+1)+'/'+today.getDate() + '/' + today.getFullYear();
+        profile.routes.push({coords:arr, date:dateFormat, distance:$scope.distance, time:$scope.hours + ":" + $scope.minutes + ":" + $scope.seconds});
+        profile.$save();
+        $scope.tracking = false;
+      }
+      else{
+        $scope.tracking = true;
+        $scope.seconds = 0;
+        $scope.minutes = 0;
+        $scope.hours = 0;
+        $scope.timer();
+        BackgroundLocation.toggle(true);
+      }
+    } 
   })
   .controller('HomepageCtrl', function(ConnectivityMonitor, Setup, HomepageService,$scope, $rootScope, $state, $timeout, $window) {
   
@@ -141,14 +217,6 @@ $ionicModal.fromTemplateUrl('templates/map-modal.html', {
         // Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function() {
           $scope.modal.remove();
-        });
-        // Execute action on hide modal
-        $scope.$on('modal.hidden', function() {
-          // Execute action
-        });
-        // Execute action on remove modal
-        $scope.$on('modal.removed', function() {
-          // Execute action
         });
         $scope.diff={
           easy:false,
@@ -310,12 +378,6 @@ $ionicModal.fromTemplateUrl('templates/map-modal.html', {
 
    
   })
-
-  
-  .controller('MainCtrl', function($scope, $stateParams) {
-   
-  })
-
   .controller('MapCtrl', function($ionicPopup,ConnectivityMonitor, $window, $scope, $cordovaGeolocation,$cordovaInAppBrowser, Setup, Map,OfflineMap) {
     //for using non cordova version of mapbox
    //Map.setup();

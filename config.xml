@@ -62,4 +62,10 @@
   <allow-navigation href="http://10.141.119.192:8101"/>
   <allow-navigation href="http://10.141.119.192:8100"/>
   <plugin name="cordova-plugin-appavailability" spec="~0.4.2"/>
+  <plugin name="cordova-background-geolocation-lt">
+    <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="Background location-tracking is required"/>
+    <variable name="LOCATION_WHEN_IN_USE_USAGE_DESCRIPTION" value="Background location-tracking is required"/>
+    <variable name="MOTION_USAGE_DESCRIPTION" value="Using the accelerometer increases battery-efficiency by intelligently toggling location-tracking only when the device is detected to be moving"/>
+    <variable name="LICENSE" value="YOUR_LICENSE_KEY"/>
+  </plugin>
 </widget>

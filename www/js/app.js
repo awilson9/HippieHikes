@@ -15,26 +15,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
         });
     };
 })
-.constant('DB_CONFIG', {
-    name: 'DB',
-    tables: [
-      {
-            name: 'routes',
-            columns: [
-                {name: 'index', type: 'integer primary key'},
-                {name: 'lat', type: 'real'},
-                {name: 'long', type: 'real'},
-            ]
-        },
-        {
-          name: 'offlinemaps',
-          columns: [
-          {name:'guide'
-          }
-          ]
-        }
-    ]
-})
+
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -79,7 +60,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html',
-    controller:'MainCtrl'
+    
   })
 
   // Each tab has its own nav history stack:
@@ -129,6 +110,24 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
       'tab-map': {
         templateUrl: 'templates/map.html',
         controller: 'MapCtrl'
+      }
+    }
+  })
+  .state('tab.route', {
+    url:'/route',
+    resolve:{
+      profile: function(Users, Auth){
+      return Auth.$requireSignIn().then(function(auth){
+        return Users.getProfile(auth.uid).$loaded().then(function(data){
+          return data;
+        });
+      });
+    }
+    },
+    views: {
+      'tab-route': {
+        templateUrl: 'templates/route.html',
+        controller: 'RouteCtrl'
       }
     }
   })

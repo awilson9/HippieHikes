@@ -1,0 +1,12 @@
+<ion-view>
+<ion-content>
+	<div style="height:60px"></div>
+	<button id="recButton" class="rec-button" ng-click="route()"></button>
+	<div ng-show="tracking">
+		<span>Time Spent Tracking</span>
+		<span>{{hours}} hours {{minutes}} minutes {{seconds}} seconds</span>
+		<span>Approximate Distance Travelled</span>
+		<span>{{distance}} miles</span>
+	</div>
+</ion-content>
+</ion-view>
