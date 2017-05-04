@@ -105,7 +105,7 @@ $ionicModal.fromTemplateUrl('templates/route-map.html', {
     }
   })
   .controller('RouteCtrl', function(BackgroundLocation, profile, $scope, $timeout){
-      $scope.tracking = false
+      $scope.tracking = false;
       $('#recButton').addClass("notRec");
 
      $('#recButton').click(function(){
@@ -141,7 +141,6 @@ $scope.timer = function() {
 
 $scope.route = function(){
       if($scope.tracking){
-
         var arr = BackgroundLocation.toggle();
         console.log(JSON.stringify(arr));
         if(profile.routes==null){

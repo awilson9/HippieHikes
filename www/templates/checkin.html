@@ -5,33 +5,33 @@
     </ion-header-bar>
     <ion-content>
     <form>
-    <label class="item item-input item-stacked-label">
+    <label class="item padding item-input item-stacked-label">
  	 	<span class="check-label">Date</span>
  	 	<input type="date" class="form-control" ng-model="checkin.date" placeholder="">
 	</label>
 	
 	
-	<label class="item item-input item-stacked-label">
- 	 	<span class="input-label">Distance Travelled</span>
+	<label class="item padding item-input item-stacked-label">
+ 	 	<span class="check-label">Distance Travelled</span>
  	 	<input type="number" class="form-control" ng-model="checkin.distance" placeholder="">
 	</label>
 	
 	
-	<label class="item item-input item-stacked-label">
- 	 	<span class="input-label">Time</span>
- 	 	<input type="number" style="display:table-cell" ng-model="checkin.hour" class="form-control" placeholder="">Hours
-   		<input type="number" class="form-control" ng-model="checkin.minute" style="display:table-cell" placeholder="">Minutes
+	<label class="item padding item-input item-stacked-label">
+ 	 	<span class="check-label">Time</span>
+ 	 	<input type="number" style="display:table-cell" ng-model="checkin.hour" class="form-control" placeholder="Hours">
+   		<input type="number" class="form-control" ng-model="checkin.minute" style="display:table-cell" placeholder="Minutes">
 	</label>
 	
 	
 	
-	<label class="item item-input item-stacked-label">
- 	 	<span class="input-label">Notes</span>
+	<label class="item padding item-input item-stacked-label">
+ 	 	<span class="check-label">Notes</span>
  	 	<textarea type="text" ng-model="checkin.notes" class="form-control" placeholder=""/>
 	</label>
 	
 	
-	<div class="item item-input item-stacked-label">
+	<div class="item item-input padding item-stacked-label">
 
  	 	<div class="input-label">Difficulty</div>
  	 	</div>
@@ -46,8 +46,11 @@
    		<div class="tag-description selected" ng-click="setDiff('hard')" ng-show="diff.hard">Hard</div>
    		</div>
  	 
+ 	 	<div class="center-container">
  	 	<div class="item item-input" style="width:100%">
- 	 	<div ng-click="submit()" class="tag-description" style="width:100%">Submit!</div>
+
+ 	 	<div ng-click="submit()" class="tag-description">Submit!</div>
+ 	 	</div>
  	 	</div>
 	</form>
     </ion-content>

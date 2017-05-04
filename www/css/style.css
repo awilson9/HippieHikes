@@ -43,6 +43,10 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 }
 .item, .item-avatar{
 	background-color:#d3d3d3;
+	
+}
+.padding{
+	padding:10px;
 }
 .selected{
 	background-color:#2ebbbe;
@@ -75,7 +79,8 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
     color: #696969;
     padding: 15px;
     border-radius:4px;
-    margin:3px
+    margin:3px;
+   
 }
 .tag-wrapper{
 	display:inline-flex;
@@ -158,16 +163,23 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 }
 
 .rec-button {
-	width: 35px;
-	height: 35px;
+	width: 80px;
+	height: 80px;
 	font-size: 0;
 	background-color: red;
 	border: 0;
-	border-radius: 35px;
+	border-radius: 50px;
 	margin: 18px;
-	outline: none;
+	
 }
-
+.center-item{
+	 align-self: center;
+}
+.center-container{
+ 	display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .notRec{
 	background-color: darkred;
 }

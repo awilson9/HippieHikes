@@ -1,12 +1,34 @@
-<ion-view>
+<ion-view title="Route Tracking">
 <ion-content>
-	<div style="height:60px"></div>
+	
+	<div class="center-container tag-description" ng-show="!tracking">
+		<h3 style="color:#2ebbbe" >Press To Start Tracking</h3></div>
+	<div class="center-container tag-description" ng-show="tracking">
+		<h3 style="color:#2ebbbe" >Press To Stop Tracking</h3></div>
+	
+	<div class="center-container">
+	
+	<div class="center-item">
 	<button id="recButton" class="rec-button" ng-click="route()"></button>
-	<div ng-show="tracking">
-		<span>Time Spent Tracking</span>
-		<span>{{hours}} hours {{minutes}} minutes {{seconds}} seconds</span>
-		<span>Approximate Distance Travelled</span>
-		<span>{{distance}} miles</span>
+
 	</div>
+	</div>
+	<div ng-show="tracking">
+		<div class="center-container tag-description">
+			<h4 style="color:#2ebbbe">Time Spent Tracking</h4>
+		</div>
+		<div class="center-container">
+			<h5 style="color:#d3d3d3">{{hours}}:{{minutes}}:{{seconds}}s</h5>
+		</div>
+		<div class="center-container tag-description">
+			<h4 style="color:#2ebbbe">Distance Travelled</h4>
+		</div>
+		<div class="center-container">
+			<h5 style="color:#d3d3d3">{{distance}} miles</h5>
+		</div>
+		</div>
+	</div>
+
+	
 </ion-content>
 </ion-view>
