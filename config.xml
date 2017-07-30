@@ -61,6 +61,7 @@
   <allow-navigation href="http://192.168.1.61:8101"/>
   <allow-navigation href="http://10.141.119.192:8101"/>
   <allow-navigation href="http://10.141.119.192:8100"/>
+  <allow-navigation href="http://10.140.102.186:8100"/>
   <plugin name="cordova-plugin-appavailability" spec="~0.4.2"/>
   <plugin name="cordova-background-geolocation-lt">
     <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="Background location-tracking is required"/>

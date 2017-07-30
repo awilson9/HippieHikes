@@ -16,7 +16,7 @@ img {
     cursor: pointer;
 }
 ion-content{
-	background-color:#d3d3d3;
+	
 }
 
 .scrollCanvas{
@@ -45,7 +45,7 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 	color:white!important;
 }
 .item, .item-avatar{
-	background-color:#d3d3d3;
+	
 	
 }
 .padding{

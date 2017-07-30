@@ -28,13 +28,13 @@
 <div style="height:55px"></div>
 <img src="{{siteURL}}"  />
 
-<h1 class="guide-header">{{data.location_loc}}</h1>
+<h1 class="guide-header">{{data.name_description}}</h1>
 <h1 class="guide-header">{{data.closest_to}}</h1>
    <div class="tag-wrapper">
       <div class="tag-description">{{data.distance}} Miles</div>
       <div class="tag-description">{{data.elevation}} ft. gain</div>
       <div class="tag-description" ng-repeat="tags in data.tags">{{tags}}</div>
-      <div class="tag-description" ng-click="getDirections()">Get Directions Here</div>
+      <!-- <div class="tag-description" ng-click="getDirections()">Get Directions Here<ss/div> -->
    </div>
    
    <div>

@@ -121,7 +121,7 @@ $ionicModal.fromTemplateUrl('templates/route-map.html', {
     });
      
     $scope.add = function() {
-      $scope.distance = Math.round((((15*BackgroundLocation.distance)/5280)*100)/100);
+      $scope.distance = ((15*BackgroundLocation.distance)/5280);
       $scope.seconds++;
       if ($scope.seconds >= 60) {
           $scope.seconds = 0;
@@ -431,7 +431,7 @@ $scope.route = function(){
     
       // Custom popup
       var myPopup = $ionicPopup.show({
-         template: '<div ng-repeat="map in maps" class="tag-wrapper"><div class="tag-description" ng-click="selectGuide(map)" ng-show="selected!=map.name">{{map.name}}</div><div class="tag-description selected" ng-click="selectGuide(map)" ng-show="selected===map.name">{{map.name}}</div></div>',
+         template: '<div ng-repeat="map in maps" class="tag-wrapper"><div class="tag-description" ng-click="selectGuide(map)" ng-show="selected!=map.name">{{map.name_description}}</div><div class="tag-description selected" ng-click="selectGuide(map)" ng-show="selected===map.name">{{map.name_description}}</div></div>',
          title: 'Choose a guide to display',
          scope: $scope,
       

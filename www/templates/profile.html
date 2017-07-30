@@ -41,31 +41,31 @@
     <div class="item item-avatar" ng-repeat="guide in profile.future" ng-click="openGuide(guide)">
       <img src="{{data.guides[guide].image_descriptions[0].URL}}" >
     
-    <h2 style="color:white">{{data.guides[guide].name_description}}</h2>
-    <p style="color:white">{{data.guides[guide].closest_to}}</p> 
+    <h2 style="">{{data.guides[guide].name_description}}</h2>
+    <p style="">{{data.guides[guide].closest_to}}</p> 
     </div>
   </div>
   <div ng-show="view.offline">
     <div class="item item-avatar" ng-repeat="guide in profile.offline" ng-click="openMap(guide)">
      <img src="{{data.guides[guide].image_descriptions[0].URL}}"/>
-    <h2 style="color:white">{{data.guides[guide].name_description}}</h2>
+    <h2 style="">{{data.guides[guide].name_description}}</h2>
   </div>
   </div>
   <div ng-show="view.past">
-    <div class="item item-avatar" ng-repeat="route in profile.routes" ng-click="openRoute(route)">
-      <p style="color:white">Distance: {{route.distance}} miles</p>
-      <p style="color:white">Time: {{route.time}} miles</p>
-      <p style="color:white">Date: {{route.date}}</p>
+    <div class="item" ng-repeat="route in profile.routes" ng-click="openRoute(route)">
+      <p style="">Distance: {{route.distance}} miles</p>
+      <p style="">Time: {{route.time}} s</p>
+      <p style="">Date: {{route.date}}</p>
     </div>
   </div>
   <div ng-show="view.checkins">
     <div class="item item-avatar" ng-repeat="checkin in profile.checkins" ng-click="openGuide(checkin.guide)">
       <img src="{{data.guides[checkin.guide].image_descriptions[0].URL}}"/>
-      <h2 style="color:white">{{data.guides[checkin.guide].name_description}}</h2>
-      <p style="color:white">Distance: {{checkin.distance}} miles</p>
-      <p style="color:white">Time: {{checkin.hour}} Hours {{checkin.minute}} Minutes</p>
-      <p style="color:white">Difficulty: {{checkin.diff}}</p>
-      <p style="color:white">Notes: {{checkin.notes}}</p>
+      <h2 >{{data.guides[checkin.guide].name_description}}</h2>
+      <p >Distance: {{checkin.distance}} miles</p>
+      <p >Time: {{checkin.hour}} Hours {{checkin.minute}} Minutes</p>
+      <p >Difficulty: {{checkin.diff}}</p>
+      <p >Notes: {{checkin.notes}}</p>
   </div>
  
  <!--  <form ng-submit="profileCtrl.updateProfile()">
